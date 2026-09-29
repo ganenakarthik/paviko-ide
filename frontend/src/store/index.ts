@@ -66,43 +66,73 @@ export const useEditorStore = create<EditorState>((set, get) => ({
   activeTemplate: 'steering',
   setActiveTemplate: (template) => set({ activeTemplate: template }),
   loadProject: async (id, workspace) => {
+    let projectData: any = null;
+    let template: ProjectTemplate = id.includes('steering') ? 'steering' : id.includes('pavibot') ? 'pavibot' : 'custom';
+    let name = template === 'steering' ? 'Smart Steering Wheel 🚗' : template === 'pavibot' ? 'Pavibot Companion Cube 🤖' : 'ESP32 Project';
+    let blockXml = '';
+    let code = '';
+
+    // 1. Try loading from API
     try {
       const res = await fetch(`${API_BASE}/projects/${id}`);
-      if (!res.ok) return;
-      const data = await res.json();
-      
-      let template: ProjectTemplate = 'custom';
-      const xmlStr = data.block_xml || '';
-      const lowerName = (data.name || '').toLowerCase();
-
-      if (xmlStr.includes('steering_setup') || xmlStr.includes('steering_set') || lowerName.includes('steering') || lowerName.includes('wheel')) {
-        template = 'steering';
-      } else if (xmlStr.includes('pavibot_setup') || xmlStr.includes('pavibot_set') || lowerName.includes('pavibot') || lowerName.includes('bot') || lowerName.includes('groot')) {
-        template = 'pavibot';
+      if (res.ok) {
+        projectData = await res.json();
+        name = projectData.name || name;
+        blockXml = projectData.block_xml || '';
+        code = projectData.code || '';
       }
+    } catch (e) {
+      console.warn("Backend API offline, using local storage");
+    }
 
-      set({ projectId: data.id, projectName: data.name, generatedCode: data.code || '', activeTemplate: template });
+    // 2. Try loading from localStorage if API data empty
+    if (!blockXml) {
+      const localDataStr = localStorage.getItem(`paviko_project_${id}`);
+      if (localDataStr) {
+        try {
+          const localData = JSON.parse(localDataStr);
+          blockXml = localData.block_xml || '';
+          code = localData.code || '';
+        } catch (err) {}
+      }
+    }
 
-      if (data.block_xml && workspace) {
+    // 3. Set Store State
+    set({ projectId: id, projectName: name, generatedCode: code, activeTemplate: template });
+
+    if (blockXml && workspace) {
+      try {
         // @ts-ignore
         const Blockly = await import('blockly');
         workspace.clear();
-        Blockly.Xml.domToWorkspace(Blockly.utils.xml.textToDom(data.block_xml), workspace);
+        Blockly.Xml.domToWorkspace(Blockly.utils.xml.textToDom(blockXml), workspace);
         workspace.updateToolbox(getProjectToolboxXml(template));
+      } catch (err) {
+        console.error("Failed to render XML workspace", err);
       }
-    } catch (e) {
-      console.error("Failed to load project", e);
     }
   },
   saveProject: async (workspace) => {
-    const { projectId, projectName, generatedCode } = get();
+    const { projectId, projectName, generatedCode, activeTemplate } = get();
     if (!projectId || !workspace) return;
+    
     try {
       // @ts-ignore
       const Blockly = await import('blockly');
       const xml = Blockly.Xml.workspaceToDom(workspace);
       const xmlText = Blockly.Xml.domToText(xml);
       
+      // Save locally first for instant, guaranteed persistence
+      localStorage.setItem(`paviko_project_${projectId}`, JSON.stringify({
+        id: projectId,
+        name: projectName,
+        block_xml: xmlText,
+        code: generatedCode,
+        template: activeTemplate,
+        updated_at: new Date().toISOString()
+      }));
+
+      // Sync to API
       await fetch(`${API_BASE}/projects/${projectId}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
@@ -114,7 +144,7 @@ export const useEditorStore = create<EditorState>((set, get) => ({
         })
       });
     } catch (e) {
-      console.error("Failed to save project", e);
+      console.warn("Failed to sync project save to backend", e);
     }
   },
 
