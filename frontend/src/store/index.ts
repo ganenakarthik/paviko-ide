@@ -8,12 +8,14 @@ export type ChatMessage = {
   text: string;
 };
 
+export type ProjectTemplate = 'steering' | 'pavibot' | 'custom';
+
 interface EditorState {
   // Project
   projectId: string | null;
   projectName: string;
-  activeTemplate: 'lighthouse' | 'train' | 'traffic' | 'servo' | 'weather' | 'custom';
-  setActiveTemplate: (template: 'lighthouse' | 'train' | 'traffic' | 'servo' | 'weather' | 'custom') => void;
+  activeTemplate: ProjectTemplate;
+  setActiveTemplate: (template: ProjectTemplate) => void;
   loadProject: (id: string, workspace: any) => Promise<void>;
   saveProject: (workspace: any) => Promise<void>;
   
@@ -60,8 +62,8 @@ const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:8000/api';
 export const useEditorStore = create<EditorState>((set, get) => ({
   // --- PROJECT ---
   projectId: null,
-  projectName: 'Untitled Project',
-  activeTemplate: 'lighthouse',
+  projectName: 'Smart Steering Wheel 🚗',
+  activeTemplate: 'steering',
   setActiveTemplate: (template) => set({ activeTemplate: template }),
   loadProject: async (id, workspace) => {
     try {
@@ -69,20 +71,14 @@ export const useEditorStore = create<EditorState>((set, get) => ({
       if (!res.ok) return;
       const data = await res.json();
       
-      let template: 'lighthouse' | 'train' | 'traffic' | 'servo' | 'weather' | 'custom' = 'custom';
+      let template: ProjectTemplate = 'custom';
       const xmlStr = data.block_xml || '';
       const lowerName = (data.name || '').toLowerCase();
 
-      if (xmlStr.includes('train_setup') || xmlStr.includes('train_motor') || lowerName.includes('train') || lowerName.includes('car')) {
-        template = 'train';
-      } else if (xmlStr.includes('traffic_setup') || xmlStr.includes('traffic_set') || lowerName.includes('traffic')) {
-        template = 'traffic';
-      } else if (xmlStr.includes('servo_setup') || xmlStr.includes('servo_set') || lowerName.includes('servo')) {
-        template = 'servo';
-      } else if (xmlStr.includes('dht11_setup') || xmlStr.includes('dht11_read') || lowerName.includes('weather') || lowerName.includes('temp') || lowerName.includes('dht')) {
-        template = 'weather';
-      } else if (xmlStr.includes('lighthouse_setup') || xmlStr.includes('lighthouse_beacon') || lowerName.includes('lighthouse')) {
-        template = 'lighthouse';
+      if (xmlStr.includes('steering_setup') || xmlStr.includes('steering_set') || lowerName.includes('steering') || lowerName.includes('wheel')) {
+        template = 'steering';
+      } else if (xmlStr.includes('pavibot_setup') || xmlStr.includes('pavibot_set') || lowerName.includes('pavibot') || lowerName.includes('bot') || lowerName.includes('groot')) {
+        template = 'pavibot';
       }
 
       set({ projectId: data.id, projectName: data.name, generatedCode: data.code || '', activeTemplate: template });

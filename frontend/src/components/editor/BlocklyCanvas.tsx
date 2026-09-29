@@ -12,42 +12,17 @@ import { useParams } from 'react-router-dom';
 defineCustomBlocks();
 
 export function getProjectToolboxXml(templateName: string): string {
-  if (templateName === 'lighthouse') {
+  if (templateName === 'steering' || templateName.includes('steering')) {
     return `
 <xml id="toolbox" style="display: none">
-  <category name="🚨 Lighthouse Setup" colour="#58d68d">
+  <category name="🚗 Steering Setup" colour="#58d68d">
     <block type="esp32_start"></block>
-    <block type="lighthouse_setup"></block>
+    <block type="steering_setup"></block>
   </category>
-  <category name="☀️ Beacon Controls" colour="#88b1f2">
-    <block type="lighthouse_beacon_on"></block>
-    <block type="lighthouse_beacon_off"></block>
-    <block type="lighthouse_set_brightness"></block>
-  </category>
-  <category name="🕒 Timing & Loops" colour="#f1c40f">
-    <block type="esp32_wait"></block>
-    <block type="controls_repeat_ext">
-      <value name="TIMES">
-        <shadow type="math_number">
-          <field name="NUM">10</field>
-        </shadow>
-      </value>
-    </block>
-  </category>
-</xml>`;
-  }
-
-  if (templateName === 'train') {
-    return `
-<xml id="toolbox" style="display: none">
-  <category name="🚂 Train Setup" colour="#58d68d">
-    <block type="esp32_start"></block>
-    <block type="train_setup"></block>
-  </category>
-  <category name="⚡ Motor & Radar" colour="#b18eed">
-    <block type="train_motor_move"></block>
-    <block type="train_read_distance"></block>
-    <block type="train_check_obstacle"></block>
+  <category name="🏎️ Driving & Angle" colour="#b18eed">
+    <block type="steering_set_angle"></block>
+    <block type="steering_drive_motor"></block>
+    <block type="steering_brake"></block>
   </category>
   <category name="🕒 Timing & Loops" colour="#f1c40f">
     <block type="esp32_wait"></block>
@@ -62,69 +37,19 @@ export function getProjectToolboxXml(templateName: string): string {
 </xml>`;
   }
 
-  if (templateName === 'traffic') {
+  if (templateName === 'pavibot' || templateName.includes('pavibot') || templateName.includes('groot') || templateName.includes('bot')) {
     return `
 <xml id="toolbox" style="display: none">
-  <category name="🚦 Traffic Setup" colour="#58d68d">
+  <category name="🤖 Pavibot OLED Setup" colour="#58d68d">
     <block type="esp32_start"></block>
-    <block type="traffic_setup"></block>
+    <block type="pavibot_setup"></block>
   </category>
-  <category name="🚦 Lights Signal" colour="#e74c3c">
-    <block type="traffic_set_red"></block>
-    <block type="traffic_set_yellow"></block>
-    <block type="traffic_set_green"></block>
-  </category>
-  <category name="🕒 Timing & Loops" colour="#f1c40f">
-    <block type="esp32_wait"></block>
-    <block type="controls_repeat_ext">
-      <value name="TIMES">
-        <shadow type="math_number">
-          <field name="NUM">10</field>
-        </shadow>
-      </value>
-    </block>
-  </category>
-</xml>`;
-  }
-
-  if (templateName === 'servo') {
-    return `
-<xml id="toolbox" style="display: none">
-  <category name="🤖 Servo Setup" colour="#58d68d">
-    <block type="esp32_start"></block>
-    <block type="servo_setup"></block>
-  </category>
-  <category name="🔄 Servo Controls" colour="#b18eed">
-    <block type="servo_set_angle"></block>
-    <block type="servo_sweep"></block>
-  </category>
-  <category name="🕒 Timing & Loops" colour="#f1c40f">
-    <block type="esp32_wait"></block>
-    <block type="controls_repeat_ext">
-      <value name="TIMES">
-        <shadow type="math_number">
-          <field name="NUM">5</field>
-        </shadow>
-      </value>
-    </block>
-  </category>
-</xml>`;
-  }
-
-  if (templateName === 'weather') {
-    return `
-<xml id="toolbox" style="display: none">
-  <category name="🌡️ Weather Setup" colour="#58d68d">
-    <block type="esp32_start"></block>
-    <block type="dht11_setup"></block>
-  </category>
-  <category name="💧 Sensors & Readings" colour="#88b1f2">
-    <block type="dht11_read_temp"></block>
-    <block type="dht11_read_humidity"></block>
-    <block type="dht11_print_temp"></block>
-    <block type="dht11_print_humidity"></block>
-    <block type="dht11_print_readings"></block>
-    <block type="dht11_alert_high_temp"></block>
+  <category name="👁️ Eyes & Expressions" colour="#88b1f2">
+    <block type="pavibot_set_expression"></block>
+    <block type="pavibot_show_menu"></block>
+    <block type="pavibot_show_temp_hum"></block>
+    <block type="pavibot_run_stopwatch"></block>
+    <block type="pavibot_set_torch"></block>
   </category>
   <category name="🕒 Timing & Loops" colour="#f1c40f">
     <block type="esp32_wait"></block>
@@ -163,20 +88,11 @@ export function getProjectToolboxXml(templateName: string): string {
 }
 
 export function getProjectConnectedXml(templateName: string): string {
-  if (templateName === 'lighthouse') {
-    return `<xml xmlns="https://developers.google.com/blockly/xml"><block type="esp32_start" x="50" y="50"><next><block type="lighthouse_setup"><field name="PIN">2</field><next><block type="controls_repeat_ext"><value name="TIMES"><shadow type="math_number"><field name="NUM">10</field></shadow></value><statement name="DO"><block type="lighthouse_beacon_on"><field name="PIN">2</field><next><block type="esp32_wait"><field name="SECONDS">1</field><next><block type="lighthouse_beacon_off"><field name="PIN">2</field><next><block type="esp32_wait"><field name="SECONDS">1</field></block></next></block></next></block></next></block></statement></block></next></block></next></block></xml>`;
+  if (templateName === 'steering' || templateName.includes('steering')) {
+    return `<xml xmlns="https://developers.google.com/blockly/xml"><block type="esp32_start" x="50" y="50"><next><block type="steering_setup"><field name="SERVO_PIN">13</field><field name="MOTOR_PIN">12</field><next><block type="controls_repeat_ext"><value name="TIMES"><shadow type="math_number"><field name="NUM">5</field></shadow></value><statement name="DO"><block type="steering_set_angle"><field name="ANGLE">90</field><next><block type="steering_drive_motor"><field name="STATE">FORWARD</field><next><block type="esp32_wait"><field name="SECONDS">2</field><next><block type="steering_set_angle"><field name="ANGLE">45</field><next><block type="esp32_wait"><field name="SECONDS">1</field><next><block type="steering_set_angle"><field name="ANGLE">135</field><next><block type="esp32_wait"><field name="SECONDS">1</field></block></next></block></next></block></next></block></next></block></next></block></statement></block></next></block></next></block></xml>`;
   }
-  if (templateName === 'train') {
-    return `<xml xmlns="https://developers.google.com/blockly/xml"><block type="esp32_start" x="50" y="50"><next><block type="train_setup"><field name="MOTOR_PIN">12</field><field name="TRIG_PIN">4</field><field name="ECHO_PIN">5</field><next><block type="controls_repeat_ext"><value name="TIMES"><shadow type="math_number"><field name="NUM">5</field></shadow></value><statement name="DO"><block type="train_motor_move"><field name="STATE">FORWARD</field><next><block type="train_check_obstacle"><field name="DISTANCE">20</field><next><block type="esp32_wait"><field name="SECONDS">1</field></block></next></block></next></block></statement></block></next></block></next></block></xml>`;
-  }
-  if (templateName === 'traffic') {
-    return `<xml xmlns="https://developers.google.com/blockly/xml"><block type="esp32_start" x="50" y="50"><next><block type="traffic_setup"><field name="RED_PIN">4</field><field name="YELLOW_PIN">2</field><field name="GREEN_PIN">5</field><next><block type="controls_repeat_ext"><value name="TIMES"><shadow type="math_number"><field name="NUM">10</field></shadow></value><statement name="DO"><block type="traffic_set_red"><field name="STATE">HIGH</field><next><block type="esp32_wait"><field name="SECONDS">3</field><next><block type="traffic_set_red"><field name="STATE">LOW</field><next><block type="traffic_set_yellow"><field name="STATE">HIGH</field><next><block type="esp32_wait"><field name="SECONDS">1</field><next><block type="traffic_set_yellow"><field name="STATE">LOW</field><next><block type="traffic_set_green"><field name="STATE">HIGH</field><next><block type="esp32_wait"><field name="SECONDS">3</field><next><block type="traffic_set_green"><field name="STATE">LOW</field></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></statement></block></next></block></next></block></xml>`;
-  }
-  if (templateName === 'servo') {
-    return `<xml xmlns="https://developers.google.com/blockly/xml"><block type="esp32_start" x="50" y="50"><next><block type="servo_setup"><field name="PIN">13</field><next><block type="controls_repeat_ext"><value name="TIMES"><shadow type="math_number"><field name="NUM">5</field></shadow></value><statement name="DO"><block type="servo_set_angle"><field name="ANGLE">0</field><next><block type="esp32_wait"><field name="SECONDS">1</field><next><block type="servo_set_angle"><field name="ANGLE">180</field><next><block type="esp32_wait"><field name="SECONDS">1</field></block></next></block></next></block></next></block></statement></block></next></block></next></block></xml>`;
-  }
-  if (templateName === 'weather') {
-    return `<xml xmlns="https://developers.google.com/blockly/xml"><block type="esp32_start" x="50" y="50"><next><block type="dht11_setup"><field name="PIN">4</field><next><block type="controls_repeat_ext"><value name="TIMES"><shadow type="math_number"><field name="NUM">10</field></shadow></value><statement name="DO"><block type="dht11_print_readings"><next><block type="dht11_alert_high_temp"><field name="TEMP_LIMIT">30</field><field name="ALARM_PIN">2</field><next><block type="esp32_wait"><field name="SECONDS">2</field></block></next></block></next></block></statement></block></next></block></next></block></xml>`;
+  if (templateName === 'pavibot' || templateName.includes('pavibot') || templateName.includes('groot') || templateName.includes('bot')) {
+    return `<xml xmlns="https://developers.google.com/blockly/xml"><block type="esp32_start" x="50" y="50"><next><block type="pavibot_setup"><field name="SDA_PIN">21</field><field name="SCL_PIN">22</field><next><block type="controls_repeat_ext"><value name="TIMES"><shadow type="math_number"><field name="NUM">10</field></shadow></value><statement name="DO"><block type="pavibot_set_expression"><field name="EXPRESSION">HAPPY</field><next><block type="esp32_wait"><field name="SECONDS">2</field><next><block type="pavibot_show_temp_hum"><next><block type="esp32_wait"><field name="SECONDS">3</field><next><block type="pavibot_set_expression"><field name="EXPRESSION">BLINK</field><next><block type="esp32_wait"><field name="SECONDS">1</field></block></next></block></next></block></next></block></next></block></statement></block></next></block></next></block></xml>`;
   }
   return `<xml xmlns="https://developers.google.com/blockly/xml"><block type="esp32_start" x="50" y="50"><next><block type="esp32_pin_setup"><field name="PIN">2</field><next><block type="controls_repeat_ext"><value name="TIMES"><shadow type="math_number"><field name="NUM">10</field></shadow></value><statement name="DO"><block type="esp32_led_on"><field name="PIN">2</field><next><block type="esp32_wait"><field name="SECONDS">1</field><next><block type="esp32_led_off"><field name="PIN">2</field><next><block type="esp32_wait"><field name="SECONDS">1</field></block></next></block></next></block></next></block></statement></block></next></block></next></block></xml>`;
 }
@@ -224,13 +140,11 @@ export default function BlocklyCanvas() {
     let hasSetup = false;
     let hasAction = false;
 
-    const setupTypes = ['lighthouse_setup', 'train_setup', 'traffic_setup', 'servo_setup', 'dht11_setup', 'esp32_pin_setup'];
+    const setupTypes = ['steering_setup', 'pavibot_setup', 'esp32_pin_setup'];
     const actionTypes = [
-      'lighthouse_beacon_on', 'lighthouse_beacon_off', 'lighthouse_set_brightness',
-      'train_motor_move', 'train_check_obstacle',
-      'traffic_set_red', 'traffic_set_yellow', 'traffic_set_green',
-      'servo_set_angle', 'servo_sweep',
-      'dht11_print_readings', 'dht11_alert_high_temp',
+      'steering_set_angle', 'steering_drive_motor', 'steering_brake',
+      'pavibot_set_expression', 'pavibot_show_menu', 'pavibot_show_temp_hum',
+      'pavibot_run_stopwatch', 'pavibot_set_torch',
       'esp32_led_on', 'esp32_led_off', 'controls_repeat_ext'
     ];
 
@@ -242,11 +156,8 @@ export default function BlocklyCanvas() {
 
     if (!hasSetup) {
       const defaultSetup = 
-        template === 'lighthouse' ? 'lighthouse_setup' :
-        template === 'train' ? 'train_setup' :
-        template === 'traffic' ? 'traffic_setup' :
-        template === 'servo' ? 'servo_setup' :
-        template === 'weather' ? 'dht11_setup' : 'esp32_pin_setup';
+        template === 'steering' ? 'steering_setup' :
+        template === 'pavibot' ? 'pavibot_setup' : 'esp32_pin_setup';
 
       applyToolboxBlockGlow(workspace, defaultSetup);
       setMissionText('✨ STEP 2: Connect your Setup block right under "when ESP32 starts"!');
@@ -256,11 +167,8 @@ export default function BlocklyCanvas() {
 
     if (!hasAction) {
       const defaultAction = 
-        template === 'lighthouse' ? 'lighthouse_beacon_on' :
-        template === 'train' ? 'train_motor_move' :
-        template === 'traffic' ? 'traffic_set_red' :
-        template === 'servo' ? 'servo_set_angle' :
-        template === 'weather' ? 'dht11_print_readings' : 'esp32_led_on';
+        template === 'steering' ? 'steering_set_angle' :
+        template === 'pavibot' ? 'pavibot_set_expression' : 'esp32_led_on';
 
       applyToolboxBlockGlow(workspace, defaultAction);
       setMissionText('🌟 STEP 3: Awesome! Now attach your Action block to run the kit!');
@@ -308,13 +216,10 @@ export default function BlocklyCanvas() {
     const searchParams = new URLSearchParams(window.location.search);
     const templateParam = (searchParams.get('template') || '').toLowerCase();
 
-    let initialTemplate: 'lighthouse' | 'train' | 'traffic' | 'servo' | 'weather' | 'custom' = useEditorStore.getState().activeTemplate;
+    let initialTemplate: 'steering' | 'pavibot' | 'custom' = useEditorStore.getState().activeTemplate;
 
-    if (templateParam.includes('train') || templateParam.includes('car')) initialTemplate = 'train';
-    else if (templateParam.includes('traffic')) initialTemplate = 'traffic';
-    else if (templateParam.includes('servo')) initialTemplate = 'servo';
-    else if (templateParam.includes('weather') || templateParam.includes('temp') || templateParam.includes('dht')) initialTemplate = 'weather';
-    else if (templateParam.includes('lighthouse')) initialTemplate = 'lighthouse';
+    if (templateParam.includes('steering') || templateParam.includes('wheel')) initialTemplate = 'steering';
+    else if (templateParam.includes('pavibot') || templateParam.includes('bot') || templateParam.includes('groot')) initialTemplate = 'pavibot';
 
     useEditorStore.setState({ activeTemplate: initialTemplate });
 
@@ -494,11 +399,8 @@ export default function BlocklyCanvas() {
                 boxShadow: '0 2px 8px rgba(125,10,38,0.15)'
               }}
             >
-              <option value="lighthouse">🚨 Project: Blinking Lighthouse</option>
-              <option value="train">🚂 Project: Obstacle Train</option>
-              <option value="traffic">🚦 Project: City Traffic Light</option>
-              <option value="servo">🤖 Project: Robotic Servo Arm</option>
-              <option value="weather">🌡️ Project: DHT11 Weather Station</option>
+              <option value="steering">🚗 Project: Smart Steering Wheel</option>
+              <option value="pavibot">🤖 Project: Pavibot Robot Companion</option>
               <option value="custom">⚡ Project: General ESP32 GPIO</option>
             </select>
           </div>

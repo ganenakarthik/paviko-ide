@@ -69,85 +69,20 @@ export function defineCustomBlocks() {
       "style": "logic_blocks"
     },
 
-    // --- 🚨 LIGHTHOUSE PROJECT BLOCKS ---
+    // --- 🚗 STEERING PROJECT BLOCKS ---
     {
-      "type": "lighthouse_setup",
-      "message0": "🚨 Setup Lighthouse Beacon Lamp on Pin %1",
+      "type": "steering_setup",
+      "message0": "🚗 Setup Steering Servo (Pin %1) & Motor (Pin %2)",
       "args0": [
         {
           "type": "field_dropdown",
-          "name": "PIN",
-          "options": [["Pin 2 (Main Beacon)", "2"], ["Pin 4 (Aux Flash)", "4"]]
-        }
-      ],
-      "previousStatement": null,
-      "nextStatement": null,
-      "style": "pin_blocks"
-    },
-    {
-      "type": "lighthouse_beacon_on",
-      "message0": "☀️ Turn Lighthouse Beacon ON (Pin %1)",
-      "args0": [
-        {
-          "type": "field_dropdown",
-          "name": "PIN",
-          "options": [["Pin 2", "2"], ["Pin 4", "4"]]
-        }
-      ],
-      "previousStatement": null,
-      "nextStatement": null,
-      "style": "timing_blocks"
-    },
-    {
-      "type": "lighthouse_beacon_off",
-      "message0": "🌙 Turn Lighthouse Beacon OFF (Pin %1)",
-      "args0": [
-        {
-          "type": "field_dropdown",
-          "name": "PIN",
-          "options": [["Pin 2", "2"], ["Pin 4", "4"]]
-        }
-      ],
-      "previousStatement": null,
-      "nextStatement": null,
-      "style": "timing_blocks"
-    },
-    {
-      "type": "lighthouse_set_brightness",
-      "message0": "💡 Set Lighthouse Beacon Brightness %1 %%",
-      "args0": [
-        {
-          "type": "field_number",
-          "name": "BRIGHTNESS",
-          "value": 100,
-          "min": 0,
-          "max": 100
-        }
-      ],
-      "previousStatement": null,
-      "nextStatement": null,
-      "style": "timing_blocks"
-    },
-
-    // --- 🚂 ULTRASONIC TRAIN PROJECT BLOCKS ---
-    {
-      "type": "train_setup",
-      "message0": "🚂 Setup Train Motor (Pin %1) & Radar (TRIG %2, ECHO %3)",
-      "args0": [
+          "name": "SERVO_PIN",
+          "options": [["Pin 13", "13"], ["Pin 18", "18"]]
+        },
         {
           "type": "field_dropdown",
           "name": "MOTOR_PIN",
-          "options": [["Pin 12 (Motor)", "12"], ["Pin 14", "14"]]
-        },
-        {
-          "type": "field_dropdown",
-          "name": "TRIG_PIN",
-          "options": [["Pin 4", "4"], ["Pin 2", "2"]]
-        },
-        {
-          "type": "field_dropdown",
-          "name": "ECHO_PIN",
-          "options": [["Pin 5", "5"], ["Pin 18", "18"]]
+          "options": [["Pin 12", "12"], ["Pin 14", "14"]]
         }
       ],
       "previousStatement": null,
@@ -155,136 +90,15 @@ export function defineCustomBlocks() {
       "style": "pin_blocks"
     },
     {
-      "type": "train_motor_move",
-      "message0": "🚂 Drive Train %1",
-      "args0": [
-        {
-          "type": "field_dropdown",
-          "name": "STATE",
-          "options": [["FORWARD ⚡", "FORWARD"], ["BACKWARD ⏪", "BACKWARD"], ["STOP 🛑", "STOP"]]
-        }
-      ],
-      "previousStatement": null,
-      "nextStatement": null,
-      "style": "timing_blocks"
-    },
-    {
-      "type": "train_read_distance",
-      "message0": "📡 Read Ultrasonic Radar Distance (cm)",
-      "output": "Number",
-      "style": "math_blocks"
-    },
-    {
-      "type": "train_check_obstacle",
-      "message0": "🛑 IF Obstacle Closer Than %1 cm THEN Stop Train",
-      "args0": [
-        {
-          "type": "field_number",
-          "name": "DISTANCE",
-          "value": 20,
-          "min": 5,
-          "max": 100
-        }
-      ],
-      "previousStatement": null,
-      "nextStatement": null,
-      "style": "logic_blocks"
-    },
-
-    // --- 🚦 TRAFFIC LIGHT PROJECT BLOCKS ---
-    {
-      "type": "traffic_setup",
-      "message0": "🚦 Setup Traffic Lights (RED: %1, YELLOW: %2, GREEN: %3)",
-      "args0": [
-        {
-          "type": "field_dropdown",
-          "name": "RED_PIN",
-          "options": [["Pin 4", "4"], ["Pin 2", "2"]]
-        },
-        {
-          "type": "field_dropdown",
-          "name": "YELLOW_PIN",
-          "options": [["Pin 2", "2"], ["Pin 4", "4"]]
-        },
-        {
-          "type": "field_dropdown",
-          "name": "GREEN_PIN",
-          "options": [["Pin 5", "5"], ["Pin 13", "13"]]
-        }
-      ],
-      "previousStatement": null,
-      "nextStatement": null,
-      "style": "pin_blocks"
-    },
-    {
-      "type": "traffic_set_red",
-      "message0": "🔴 Turn RED Light %1",
-      "args0": [
-        {
-          "type": "field_dropdown",
-          "name": "STATE",
-          "options": [["ON", "HIGH"], ["OFF", "LOW"]]
-        }
-      ],
-      "previousStatement": null,
-      "nextStatement": null,
-      "style": "timing_blocks"
-    },
-    {
-      "type": "traffic_set_yellow",
-      "message0": "🟡 Turn YELLOW Light %1",
-      "args0": [
-        {
-          "type": "field_dropdown",
-          "name": "STATE",
-          "options": [["ON", "HIGH"], ["OFF", "LOW"]]
-        }
-      ],
-      "previousStatement": null,
-      "nextStatement": null,
-      "style": "timing_blocks"
-    },
-    {
-      "type": "traffic_set_green",
-      "message0": "🟢 Turn GREEN Light %1",
-      "args0": [
-        {
-          "type": "field_dropdown",
-          "name": "STATE",
-          "options": [["ON", "HIGH"], ["OFF", "LOW"]]
-        }
-      ],
-      "previousStatement": null,
-      "nextStatement": null,
-      "style": "timing_blocks"
-    },
-
-    // --- 🤖 SERVO ARM PROJECT BLOCKS ---
-    {
-      "type": "servo_setup",
-      "message0": "🤖 Setup Servo Arm Motor on Pin %1",
-      "args0": [
-        {
-          "type": "field_dropdown",
-          "name": "PIN",
-          "options": [["Pin 13", "13"], ["Pin 18", "18"], ["Pin 14", "14"]]
-        }
-      ],
-      "previousStatement": null,
-      "nextStatement": null,
-      "style": "pin_blocks"
-    },
-    {
-      "type": "servo_set_angle",
-      "message0": "🔄 Rotate Servo Arm to %1 °",
+      "type": "steering_set_angle",
+      "message0": "🔄 Turn Steering Wheel to %1 °",
       "args0": [
         {
           "type": "field_number",
           "name": "ANGLE",
           "value": 90,
           "min": 0,
-          "max": 180,
-          "precision": 1
+          "max": 180
         }
       ],
       "previousStatement": null,
@@ -292,22 +106,41 @@ export function defineCustomBlocks() {
       "style": "timing_blocks"
     },
     {
-      "type": "servo_sweep",
-      "message0": "🌊 Wave Servo Arm (Sweep 0° ↔ 180°)",
+      "type": "steering_drive_motor",
+      "message0": "🏎️ Drive Steering Motor %1",
+      "args0": [
+        {
+          "type": "field_dropdown",
+          "name": "STATE",
+          "options": [["FORWARD ⚡", "FORWARD"], ["REVERSE ⏪", "REVERSE"], ["STOP 🛑", "STOP"]]
+        }
+      ],
+      "previousStatement": null,
+      "nextStatement": null,
+      "style": "timing_blocks"
+    },
+    {
+      "type": "steering_brake",
+      "message0": "🛑 Emergency Brake Steering System",
       "previousStatement": null,
       "nextStatement": null,
       "style": "logic_blocks"
     },
 
-    // --- 🌡️ DHT11 WEATHER STATION PROJECT BLOCKS ---
+    // --- 🤖 PAVIBOT CUBE COMPANION BLOCKS ---
     {
-      "type": "dht11_setup",
-      "message0": "🌡️ Setup DHT11 Temp & Humidity Sensor on Pin %1",
+      "type": "pavibot_setup",
+      "message0": "🤖 Setup Pavibot OLED Display (SDA %1, SCL %2)",
       "args0": [
         {
           "type": "field_dropdown",
-          "name": "PIN",
-          "options": [["Pin 4", "4"], ["Pin 15", "15"], ["Pin 13", "13"], ["Pin 27", "27"]]
+          "name": "SDA_PIN",
+          "options": [["Pin 21", "21"], ["Pin 4", "4"]]
+        },
+        {
+          "type": "field_dropdown",
+          "name": "SCL_PIN",
+          "options": [["Pin 22", "22"], ["Pin 5", "5"]]
         }
       ],
       "previousStatement": null,
@@ -315,58 +148,72 @@ export function defineCustomBlocks() {
       "style": "pin_blocks"
     },
     {
-      "type": "dht11_read_temp",
-      "message0": "🌡️ Read Temperature (°C)",
-      "output": "Number",
-      "style": "math_blocks"
-    },
-    {
-      "type": "dht11_read_humidity",
-      "message0": "💧 Read Humidity (%)",
-      "output": "Number",
-      "style": "math_blocks"
-    },
-    {
-      "type": "dht11_print_temp",
-      "message0": "🌡️ Print Temperature (°C) to Serial Monitor",
-      "previousStatement": null,
-      "nextStatement": null,
-      "style": "timing_blocks"
-    },
-    {
-      "type": "dht11_print_humidity",
-      "message0": "💧 Print Humidity (%) to Serial Monitor",
-      "previousStatement": null,
-      "nextStatement": null,
-      "style": "timing_blocks"
-    },
-    {
-      "type": "dht11_print_readings",
-      "message0": "📺 Print DHT11 Temp & Humidity to Serial Monitor",
-      "previousStatement": null,
-      "nextStatement": null,
-      "style": "timing_blocks"
-    },
-    {
-      "type": "dht11_alert_high_temp",
-      "message0": "🔥 IF Temp > %1 °C THEN Turn Fan/Alarm ON (Pin %2)",
+      "type": "pavibot_set_expression",
+      "message0": "👁️ Display Eye Expression %1",
       "args0": [
         {
-          "type": "field_number",
-          "name": "TEMP_LIMIT",
-          "value": 30,
-          "min": 0,
-          "max": 60
-        },
+          "type": "field_dropdown",
+          "name": "EXPRESSION",
+          "options": [
+            ["HAPPY 😀", "HAPPY"],
+            ["ANGRY 😠", "ANGRY"],
+            ["BLINK 👁️", "BLINK"],
+            ["SLEEP 😴", "SLEEP"],
+            ["CHEERFUL 🌟", "CHEERFUL"]
+          ]
+        }
+      ],
+      "previousStatement": null,
+      "nextStatement": null,
+      "style": "timing_blocks"
+    },
+    {
+      "type": "pavibot_show_menu",
+      "message0": "📋 Display Menu Mode %1",
+      "args0": [
         {
           "type": "field_dropdown",
-          "name": "ALARM_PIN",
-          "options": [["Pin 2", "2"], ["Pin 4", "4"], ["Pin 5", "5"]]
+          "name": "MODE",
+          "options": [
+            ["EMO MODE", "EMO MODE"],
+            ["TEMP MODE", "TEMP MODE"],
+            ["GAME", "GAME"],
+            ["STOPWATCH", "STOPWATCH"],
+            ["TORCH", "TORCH"]
+          ]
         }
       ],
       "previousStatement": null,
       "nextStatement": null,
       "style": "logic_blocks"
+    },
+    {
+      "type": "pavibot_show_temp_hum",
+      "message0": "🌡️ Show Temp & Humidity on Pavibot OLED",
+      "previousStatement": null,
+      "nextStatement": null,
+      "style": "timing_blocks"
+    },
+    {
+      "type": "pavibot_run_stopwatch",
+      "message0": "⏱️ Run Pavibot Stopwatch Timer",
+      "previousStatement": null,
+      "nextStatement": null,
+      "style": "timing_blocks"
+    },
+    {
+      "type": "pavibot_set_torch",
+      "message0": "💡 Turn Pavibot OLED Torch %1",
+      "args0": [
+        {
+          "type": "field_dropdown",
+          "name": "STATE",
+          "options": [["ON", "HIGH"], ["OFF", "LOW"]]
+        }
+      ],
+      "previousStatement": null,
+      "nextStatement": null,
+      "style": "timing_blocks"
     }
   ]);
 }

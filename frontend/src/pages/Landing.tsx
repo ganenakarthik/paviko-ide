@@ -3,15 +3,9 @@ import { useNavigate } from 'react-router-dom';
 import { ClayButton } from '../components/clay/Clay';
 import styles from './Landing.module.css';
 
-const LIGHTHOUSE_XML = `<xml xmlns="https://developers.google.com/blockly/xml"><block type="esp32_start" x="50" y="50"><next><block type="lighthouse_setup"><field name="PIN">2</field><next><block type="controls_repeat_ext"><value name="TIMES"><shadow type="math_number"><field name="NUM">10</field></shadow></value><statement name="DO"><block type="lighthouse_beacon_on"><field name="PIN">2</field><next><block type="esp32_wait"><field name="SECONDS">1</field><next><block type="lighthouse_beacon_off"><field name="PIN">2</field><next><block type="esp32_wait"><field name="SECONDS">1</field></block></next></block></next></block></next></block></statement></block></next></block></next></block></xml>`;
+const STEERING_XML = `<xml xmlns="https://developers.google.com/blockly/xml"><block type="esp32_start" x="50" y="50"><next><block type="steering_setup"><field name="SERVO_PIN">13</field><field name="MOTOR_PIN">12</field><next><block type="controls_repeat_ext"><value name="TIMES"><shadow type="math_number"><field name="NUM">5</field></shadow></value><statement name="DO"><block type="steering_set_angle"><field name="ANGLE">90</field><next><block type="steering_drive_motor"><field name="STATE">FORWARD</field><next><block type="esp32_wait"><field name="SECONDS">2</field><next><block type="steering_set_angle"><field name="ANGLE">45</field><next><block type="esp32_wait"><field name="SECONDS">1</field><next><block type="steering_set_angle"><field name="ANGLE">135</field><next><block type="esp32_wait"><field name="SECONDS">1</field></block></next></block></next></block></next></block></next></block></next></block></statement></block></next></block></next></block></xml>`;
 
-const TRAIN_XML = `<xml xmlns="https://developers.google.com/blockly/xml"><block type="esp32_start" x="50" y="50"><next><block type="train_setup"><field name="MOTOR_PIN">12</field><field name="TRIG_PIN">4</field><field name="ECHO_PIN">5</field><next><block type="controls_repeat_ext"><value name="TIMES"><shadow type="math_number"><field name="NUM">5</field></shadow></value><statement name="DO"><block type="train_motor_move"><field name="STATE">FORWARD</field><next><block type="train_check_obstacle"><field name="DISTANCE">20</field><next><block type="esp32_wait"><field name="SECONDS">1</field></block></next></block></next></block></statement></block></next></block></next></block></xml>`;
-
-const TRAFFIC_XML = `<xml xmlns="https://developers.google.com/blockly/xml"><block type="esp32_start" x="50" y="50"><next><block type="traffic_setup"><field name="RED_PIN">4</field><field name="YELLOW_PIN">2</field><field name="GREEN_PIN">5</field><next><block type="controls_repeat_ext"><value name="TIMES"><shadow type="math_number"><field name="NUM">10</field></shadow></value><statement name="DO"><block type="traffic_set_red"><field name="STATE">HIGH</field><next><block type="esp32_wait"><field name="SECONDS">3</field><next><block type="traffic_set_red"><field name="STATE">LOW</field><next><block type="traffic_set_yellow"><field name="STATE">HIGH</field><next><block type="esp32_wait"><field name="SECONDS">1</field><next><block type="traffic_set_yellow"><field name="STATE">LOW</field><next><block type="traffic_set_green"><field name="STATE">HIGH</field><next><block type="esp32_wait"><field name="SECONDS">3</field><next><block type="traffic_set_green"><field name="STATE">LOW</field></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></statement></block></next></block></next></block></xml>`;
-
-const SERVO_XML = `<xml xmlns="https://developers.google.com/blockly/xml"><block type="esp32_start" x="50" y="50"><next><block type="servo_setup"><field name="PIN">13</field><next><block type="controls_repeat_ext"><value name="TIMES"><shadow type="math_number"><field name="NUM">5</field></shadow></value><statement name="DO"><block type="servo_set_angle"><field name="ANGLE">0</field><next><block type="esp32_wait"><field name="SECONDS">1</field><next><block type="servo_set_angle"><field name="ANGLE">180</field><next><block type="esp32_wait"><field name="SECONDS">1</field></block></next></block></next></block></next></block></statement></block></next></block></next></block></xml>`;
-
-const WEATHER_XML = `<xml xmlns="https://developers.google.com/blockly/xml"><block type="esp32_start" x="50" y="50"><next><block type="dht11_setup"><field name="PIN">4</field><next><block type="controls_repeat_ext"><value name="TIMES"><shadow type="math_number"><field name="NUM">10</field></shadow></value><statement name="DO"><block type="dht11_print_readings"><next><block type="dht11_alert_high_temp"><field name="TEMP_LIMIT">30</field><field name="ALARM_PIN">2</field><next><block type="esp32_wait"><field name="SECONDS">2</field></block></next></block></next></block></statement></block></next></block></next></block></xml>`;
+const PAVIBOT_XML = `<xml xmlns="https://developers.google.com/blockly/xml"><block type="esp32_start" x="50" y="50"><next><block type="pavibot_setup"><field name="SDA_PIN">21</field><field name="SCL_PIN">22</field><next><block type="controls_repeat_ext"><value name="TIMES"><shadow type="math_number"><field name="NUM">10</field></shadow></value><statement name="DO"><block type="pavibot_set_expression"><field name="EXPRESSION">HAPPY</field><next><block type="esp32_wait"><field name="SECONDS">2</field><next><block type="pavibot_show_temp_hum"><next><block type="esp32_wait"><field name="SECONDS">3</field><next><block type="pavibot_set_expression"><field name="EXPRESSION">BLINK</field><next><block type="esp32_wait"><field name="SECONDS">1</field></block></next></block></next></block></next></block></next></block></statement></block></next></block></next></block></xml>`;
 
 export default function Landing() {
   const navigate = useNavigate();
@@ -91,7 +85,7 @@ export default function Landing() {
           Welcome to Paviko Studio! 🚀
         </h2>
         <p style={{fontSize: '1.05rem', color: '#666', fontWeight: 600, margin: 0}}>
-          Code ESP32 microcontrollers with tactile 3D block programming, C++ generators, and 3D virtual simulators.
+          Code real-time ESP32 STEM projects: Smart Steering Wheel 🚗 & Pavibot Robot Companion 🤖!
         </p>
       </div>
 
@@ -99,7 +93,7 @@ export default function Landing() {
       <div style={{ marginBottom: '36px' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
           <h3 style={{ fontSize: '1.6rem', color: '#7D0A26', fontWeight: 900, margin: 0 }}>
-            📁 My Saved Projects ({projects.length})
+            📁 Real-Time Studio Projects ({projects.length})
           </h3>
           <div style={{ width: '260px' }}>
             <input 
@@ -125,14 +119,16 @@ export default function Landing() {
 
         {filteredProjects.length === 0 ? (
           <div style={{ background: '#fdfaf6', border: '2px dashed #d6c9b8', borderRadius: '24px', padding: '24px', textAlign: 'center', color: '#888', fontWeight: 700 }}>
-            No saved projects found. Pick a starter kit below to begin building! 👇
+            Pick a real-time STEM project below to begin building! 👇
           </div>
         ) : (
           <div className={styles.cardsGrid}>
             {filteredProjects.map(proj => (
               <div key={proj.id} className={`${styles.cardOuter} ${styles.blue}`} onClick={() => navigate(`/editor/${proj.id}`)} style={{cursor: 'pointer'}}>
                 <div className={styles.cardInner}>
-                  <div className={`${styles.iconWrapper} ${styles.blue}`}>📝</div>
+                  <div className={`${styles.iconWrapper} ${styles.blue}`}>
+                    {proj.name.toLowerCase().includes('steering') ? '🚗' : '🤖'}
+                  </div>
                   <h2 className={styles.cardTitle} style={{marginTop: 8}}>{proj.name}</h2>
                   <p className={styles.cardDesc}>Updated: {new Date(proj.updated_at).toLocaleDateString()}</p>
                   <div style={{marginTop: 'auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
@@ -146,80 +142,38 @@ export default function Landing() {
         )}
       </div>
 
-      {/* 2. STARTER KITS SECTION */}
+      {/* 2. REAL-TIME STEM PROJECTS SECTION */}
       <div>
         <h3 style={{ fontSize: '1.6rem', color: '#7D0A26', fontWeight: 900, marginBottom: '16px' }}>
-          🧩 Quick Starter Kits
+          🧩 Real-Time STEM Studio Projects
         </h3>
 
-        <div className={styles.cardsGrid}>
+        <div className={styles.cardsGrid} style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))' }}>
           
-          {/* Starter 1: Lighthouse */}
-          <div className={`${styles.cardOuter} ${styles.maroon}`} onClick={() => handleStartTemplate('Blinking Lighthouse', LIGHTHOUSE_XML)} style={{cursor: 'pointer'}}>
+          {/* Project 1: Smart Steering Wheel */}
+          <div className={`${styles.cardOuter} ${styles.maroon}`} onClick={() => handleStartTemplate('Smart Steering Wheel', STEERING_XML)} style={{cursor: 'pointer'}}>
             <div className={styles.cardInner}>
-              <div className={`${styles.iconWrapper} ${styles.maroon}`}>🚨</div>
-              <h2 className={styles.cardTitle}>Blinking Lighthouse</h2>
+              <div className={`${styles.iconWrapper} ${styles.maroon}`}>🚗</div>
+              <h2 className={styles.cardTitle}>Smart Steering Wheel 🚗</h2>
               <p className={styles.cardDesc}>
-                Program a 3D lighthouse beacon with warning lights to keep ships safe!
+                Code ESP32 steering angles (0° to 180°), motor drive control, and real-time vehicle simulation!
               </p>
               <div style={{marginTop: 'auto'}}>
-                <ClayButton variant="maroon" size="md">Start Lighthouse</ClayButton>
+                <ClayButton variant="maroon" size="md">Start Steering Kit</ClayButton>
               </div>
             </div>
           </div>
 
-          {/* Starter 2: Train */}
-          <div className={`${styles.cardOuter} ${styles.green}`} onClick={() => handleStartTemplate('Obstacle Train', TRAIN_XML)} style={{cursor: 'pointer'}}>
+          {/* Project 2: Pavibot Robot Companion Cube */}
+          <div className={`${styles.cardOuter} ${styles.green}`} onClick={() => handleStartTemplate('Pavibot Companion Cube', PAVIBOT_XML)} style={{cursor: 'pointer'}}>
             <div className={styles.cardInner}>
-              <div className={`${styles.iconWrapper} ${styles.green}`}>🚂</div>
-              <h2 className={styles.cardTitle}>Obstacle-Avoiding Train</h2>
+              <div className={`${styles.iconWrapper} ${styles.green}`}>🤖</div>
+              <h2 className={styles.cardTitle}>Pavibot Robot Companion 🤖</h2>
               <p className={styles.cardDesc}>
-                Program an ultrasonic radar to stop the smart train before it crashes!
+                Program the OLED screen for GROOT companion eye expressions, menu modes, DHT11 temp/humidity, and stopwatch timer!
               </p>
               <div style={{marginTop: 'auto'}}>
-                <ClayButton variant="white" size="md">Start Train Kit</ClayButton>
-              </div>
-            </div>
-          </div>
-
-          {/* Starter 3: Traffic Light */}
-          <div className={`${styles.cardOuter} ${styles.blue}`} onClick={() => handleStartTemplate('City Traffic Light', TRAFFIC_XML)} style={{cursor: 'pointer'}}>
-            <div className={styles.cardInner}>
-              <div className={`${styles.iconWrapper} ${styles.blue}`}>🚦</div>
-              <h2 className={styles.cardTitle}>City Traffic Light</h2>
-              <p className={styles.cardDesc}>
-                Code a 3-stage Red, Yellow, Green signal system for urban intersections!
-              </p>
-              <div style={{marginTop: 'auto'}}>
-                <ClayButton variant="white" size="md">Start Traffic Light</ClayButton>
-              </div>
-            </div>
-          </div>
-
-          {/* Starter 4: Robotic Servo */}
-          <div className={`${styles.cardOuter} ${styles.maroon}`} onClick={() => handleStartTemplate('Robotic Servo Arm', SERVO_XML)} style={{cursor: 'pointer'}}>
-            <div className={styles.cardInner}>
-              <div className={`${styles.iconWrapper} ${styles.maroon}`}>🤖</div>
-              <h2 className={styles.cardTitle}>Robotic Servo Arm</h2>
-              <p className={styles.cardDesc}>
-                Control motor angles from 0° to 180° and program a robotic waving arm!
-              </p>
-              <div style={{marginTop: 'auto'}}>
-                <ClayButton variant="maroon" size="md">Start Servo Arm</ClayButton>
-              </div>
-            </div>
-          </div>
-
-          {/* Starter 5: Smart Weather Station */}
-          <div className={`${styles.cardOuter} ${styles.green}`} onClick={() => handleStartTemplate('DHT11 Weather Station', WEATHER_XML)} style={{cursor: 'pointer'}}>
-            <div className={styles.cardInner}>
-              <div className={`${styles.iconWrapper} ${styles.green}`}>🌡️</div>
-              <h2 className={styles.cardTitle}>DHT11 Weather Station</h2>
-              <p className={styles.cardDesc}>
-                Read live temperature & humidity data from a DHT11 sensor and trigger heat alarms!
-              </p>
-              <div style={{marginTop: 'auto'}}>
-                <ClayButton variant="white" size="md">Start Weather Kit</ClayButton>
+                <ClayButton variant="white" size="md">Start Pavibot Kit</ClayButton>
               </div>
             </div>
           </div>

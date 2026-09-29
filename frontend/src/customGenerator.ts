@@ -28,122 +28,54 @@ CppGenerator.forBlock['esp32_wait'] = function(block: Blockly.Block) {
   return `delay(${Number(seconds) * 1000});\n`;
 };
 
-// --- 🚨 LIGHTHOUSE GENERATORS ---
-CppGenerator.forBlock['lighthouse_setup'] = function(block: Blockly.Block) {
-  const pin = block.getFieldValue('PIN');
-  return `pinMode(${pin}, OUTPUT);\n`;
+// --- 🚗 STEERING GENERATORS ---
+CppGenerator.forBlock['steering_setup'] = function(block: Blockly.Block) {
+  const servoPin = block.getFieldValue('SERVO_PIN');
+  const motorPin = block.getFieldValue('MOTOR_PIN');
+  return `steeringServo.attach(${servoPin});\npinMode(${motorPin}, OUTPUT);\n`;
 };
 
-CppGenerator.forBlock['lighthouse_beacon_on'] = function(block: Blockly.Block) {
-  const pin = block.getFieldValue('PIN');
-  return `digitalWrite(${pin}, HIGH);\n`;
+CppGenerator.forBlock['steering_set_angle'] = function(block: Blockly.Block) {
+  const angle = block.getFieldValue('ANGLE');
+  return `steeringServo.write(${angle}); // Set Steering Wheel Angle\n`;
 };
 
-CppGenerator.forBlock['lighthouse_beacon_off'] = function(block: Blockly.Block) {
-  const pin = block.getFieldValue('PIN');
-  return `digitalWrite(${pin}, LOW);\n`;
-};
-
-CppGenerator.forBlock['lighthouse_set_brightness'] = function(block: Blockly.Block) {
-  const brightness = block.getFieldValue('BRIGHTNESS');
-  const pwm = Math.round((Number(brightness) / 100) * 255);
-  return `analogWrite(2, ${pwm}); // Lighthouse brightness\n`;
-};
-
-// --- 🚂 ULTRASONIC TRAIN GENERATORS ---
-CppGenerator.forBlock['train_setup'] = function(block: Blockly.Block) {
-  const motor = block.getFieldValue('MOTOR_PIN');
-  const trig = block.getFieldValue('TRIG_PIN');
-  const echo = block.getFieldValue('ECHO_PIN');
-  return `pinMode(${motor}, OUTPUT);\npinMode(${trig}, OUTPUT);\npinMode(${echo}, INPUT);\n`;
-};
-
-CppGenerator.forBlock['train_motor_move'] = function(block: Blockly.Block) {
+CppGenerator.forBlock['steering_drive_motor'] = function(block: Blockly.Block) {
   const state = block.getFieldValue('STATE');
   const val = state === 'STOP' ? 'LOW' : 'HIGH';
-  return `digitalWrite(12, ${val}); // Train Motor ${state}\n`;
+  return `digitalWrite(12, ${val}); // Steering Motor ${state}\n`;
 };
 
-CppGenerator.forBlock['train_read_distance'] = function() {
-  // @ts-ignore
-  return [`readUltrasonicDistance(4, 5)`, CppGenerator.ORDER_ATOMIC];
+CppGenerator.forBlock['steering_brake'] = function() {
+  return `digitalWrite(12, LOW); // Emergency Brake\nsteeringServo.write(90);\n`;
 };
 
-CppGenerator.forBlock['train_check_obstacle'] = function(block: Blockly.Block) {
-  const dist = block.getFieldValue('DISTANCE');
-  return `if (readUltrasonicDistance(4, 5) < ${dist}) {\n  digitalWrite(12, LOW); // Emergency Stop Train!\n}\n`;
+// --- 🤖 PAVIBOT OLED COMPANION GENERATORS ---
+CppGenerator.forBlock['pavibot_setup'] = function() {
+  return `display.begin(SSD1306_SWITCHCAPVCC, 0x3C);\ndisplay.clearDisplay();\ndisplay.setTextColor(SSD1306_WHITE);\n`;
 };
 
-// --- 🚦 TRAFFIC LIGHT GENERATORS ---
-CppGenerator.forBlock['traffic_setup'] = function(block: Blockly.Block) {
-  const red = block.getFieldValue('RED_PIN');
-  const yellow = block.getFieldValue('YELLOW_PIN');
-  const green = block.getFieldValue('GREEN_PIN');
-  return `pinMode(${red}, OUTPUT);\npinMode(${yellow}, OUTPUT);\npinMode(${green}, OUTPUT);\n`;
+CppGenerator.forBlock['pavibot_set_expression'] = function(block: Blockly.Block) {
+  const expr = block.getFieldValue('EXPRESSION');
+  return `drawPavibotExpression("${expr}"); // OLED Eye Expression\n`;
 };
 
-CppGenerator.forBlock['traffic_set_red'] = function(block: Blockly.Block) {
+CppGenerator.forBlock['pavibot_show_menu'] = function(block: Blockly.Block) {
+  const mode = block.getFieldValue('MODE');
+  return `drawPavibotMenu("${mode}"); // OLED Menu Selection\n`;
+};
+
+CppGenerator.forBlock['pavibot_show_temp_hum'] = function() {
+  return `float t = dht.readTemperature(); float h = dht.readHumidity();\ndisplay.clearDisplay(); display.setCursor(0,10);\ndisplay.print("Tem:"); display.print(t); display.println("C");\ndisplay.print("Hum:"); display.print(h); display.println("%");\ndisplay.display();\n`;
+};
+
+CppGenerator.forBlock['pavibot_run_stopwatch'] = function() {
+  return `runPavibotStopwatch(); // OLED Stopwatch Timer\n`;
+};
+
+CppGenerator.forBlock['pavibot_set_torch'] = function(block: Blockly.Block) {
   const state = block.getFieldValue('STATE');
-  return `digitalWrite(4, ${state}); // RED Light\n`;
-};
-
-CppGenerator.forBlock['traffic_set_yellow'] = function(block: Blockly.Block) {
-  const state = block.getFieldValue('STATE');
-  return `digitalWrite(2, ${state}); // YELLOW Light\n`;
-};
-
-CppGenerator.forBlock['traffic_set_green'] = function(block: Blockly.Block) {
-  const state = block.getFieldValue('STATE');
-  return `digitalWrite(5, ${state}); // GREEN Light\n`;
-};
-
-// --- 🤖 SERVO ARM GENERATORS ---
-CppGenerator.forBlock['servo_setup'] = function(block: Blockly.Block) {
-  const pin = block.getFieldValue('PIN');
-  return `myServo.attach(${pin}); // Servo Arm Motor Setup\n`;
-};
-
-CppGenerator.forBlock['servo_set_angle'] = function(block: Blockly.Block) {
-  const angle = block.getFieldValue('ANGLE');
-  return `myServo.write(${angle}); // Rotate Servo Arm\n`;
-};
-
-CppGenerator.forBlock['servo_sweep'] = function() {
-  return `for (int pos = 0; pos <= 180; pos += 10) {\n  myServo.write(pos);\n  delay(15);\n}\nfor (int pos = 180; pos >= 0; pos -= 10) {\n  myServo.write(pos);\n  delay(15);\n}\n`;
-};
-
-// --- 🌡️ DHT11 WEATHER STATION GENERATORS ---
-CppGenerator.forBlock['dht11_setup'] = function(block: Blockly.Block) {
-  const pin = block.getFieldValue('PIN');
-  return `dht.begin(); // Setup DHT11 on Pin ${pin}\n`;
-};
-
-CppGenerator.forBlock['dht11_read_temp'] = function() {
-  // @ts-ignore
-  return [`dht.readTemperature()`, CppGenerator.ORDER_ATOMIC];
-};
-
-CppGenerator.forBlock['dht11_read_humidity'] = function() {
-  // @ts-ignore
-  return [`dht.readHumidity()`, CppGenerator.ORDER_ATOMIC];
-};
-
-CppGenerator.forBlock['dht11_print_temp'] = function() {
-  return `float temp = dht.readTemperature();\nSerial.print("Temperature: "); Serial.print(temp); Serial.println(" °C");\n`;
-};
-
-CppGenerator.forBlock['dht11_print_humidity'] = function() {
-  return `float hum = dht.readHumidity();\nSerial.print("Humidity: "); Serial.print(hum); Serial.println("%");\n`;
-};
-
-CppGenerator.forBlock['dht11_print_readings'] = function() {
-  return `float temp = dht.readTemperature();\nfloat hum = dht.readHumidity();\nSerial.print("Temperature: "); Serial.print(temp); Serial.print(" °C | Humidity: "); Serial.print(hum); Serial.println("%");\n`;
-};
-
-CppGenerator.forBlock['dht11_alert_high_temp'] = function(block: Blockly.Block) {
-  const limit = block.getFieldValue('TEMP_LIMIT');
-  const pin = block.getFieldValue('ALARM_PIN');
-  return `if (dht.readTemperature() > ${limit}) {\n  digitalWrite(${pin}, HIGH); // Overheat Alarm/Fan ON!\n} else {\n  digitalWrite(${pin}, LOW);\n}\n`;
+  return `digitalWrite(2, ${state}); // Pavibot Torch Light\n`;
 };
 
 // --- STANDARD BLOCKLY CONTROLS ---
@@ -173,15 +105,13 @@ export function generateCpp(workspace: Blockly.WorkspaceSvg) {
   let setupCode = '';
   let servoInclude = false;
   let dhtInclude = false;
-  let dhtPin = '4';
+  let oledInclude = false;
 
   for (const block of blocks) {
     if (
       block.type === 'esp32_pin_setup' || 
-      block.type === 'lighthouse_setup' || 
-      block.type === 'train_setup' || 
-      block.type === 'traffic_setup' || 
-      block.type === 'servo_setup' ||
+      block.type === 'steering_setup' || 
+      block.type === 'pavibot_setup' ||
       block.type === 'dht11_setup'
     ) {
       // @ts-ignore
@@ -190,11 +120,9 @@ export function generateCpp(workspace: Blockly.WorkspaceSvg) {
         setupCode += '  ' + code;
       }
     }
-    if (block.type === 'servo_setup') servoInclude = true;
-    if (block.type === 'dht11_setup') {
-      dhtInclude = true;
-      dhtPin = block.getFieldValue('PIN') || '4';
-    }
+    if (block.type === 'steering_setup' || block.type === 'servo_setup') servoInclude = true;
+    if (block.type === 'dht11_setup' || block.type === 'pavibot_show_temp_hum') dhtInclude = true;
+    if (block.type === 'pavibot_setup' || block.type === 'pavibot_set_expression') oledInclude = true;
   }
 
   // Generate main loop code starting from esp32_start
@@ -205,11 +133,8 @@ export function generateCpp(workspace: Blockly.WorkspaceSvg) {
     while (curr) {
       if (
         curr.type !== 'esp32_pin_setup' && 
-        curr.type !== 'lighthouse_setup' && 
-        curr.type !== 'train_setup' && 
-        curr.type !== 'traffic_setup' && 
-        curr.type !== 'servo_setup' &&
-        curr.type !== 'dht11_setup'
+        curr.type !== 'steering_setup' && 
+        curr.type !== 'pavibot_setup'
       ) {
         // @ts-ignore
         const code = CppGenerator.blockToCode(curr, true);
@@ -226,8 +151,9 @@ export function generateCpp(workspace: Blockly.WorkspaceSvg) {
   }
 
   let includes = '';
-  if (servoInclude) includes += `#include <ESP32Servo.h>\nServo myServo;\n`;
-  if (dhtInclude) includes += `#include "DHT.h"\n#define DHTPIN ${dhtPin}\n#define DHTTYPE DHT11\nDHT dht(DHTPIN, DHTTYPE);\n`;
+  if (servoInclude) includes += `#include <ESP32Servo.h>\nServo steeringServo;\n`;
+  if (dhtInclude) includes += `#include "DHT.h"\n#define DHTPIN 4\n#define DHTTYPE DHT11\nDHT dht(DHTPIN, DHTTYPE);\n`;
+  if (oledInclude) includes += `#include <Wire.h>\n#include <Adafruit_GFX.h>\n#include <Adafruit_SSD1306.h>\n#define SCREEN_WIDTH 128\n#define SCREEN_HEIGHT 64\nAdafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, -1);\n`;
   if (includes) includes += `\n`;
 
   return `// Auto-generated by Paviko Studio
