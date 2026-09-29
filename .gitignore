@@ -20,3 +20,5 @@ paviko.db
 *.log
 .env
 .env.local
+
+.vercel
