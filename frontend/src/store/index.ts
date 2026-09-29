@@ -8,7 +8,7 @@ export type ChatMessage = {
   text: string;
 };
 
-export type ProjectTemplate = 'steering' | 'pavibot' | 'custom';
+export type ProjectTemplate = 'steering' | 'pavibot' | 'radar' | 'custom';
 
 interface EditorState {
   // Project
@@ -67,8 +67,8 @@ export const useEditorStore = create<EditorState>((set, get) => ({
   setActiveTemplate: (template) => set({ activeTemplate: template }),
   loadProject: async (id, workspace) => {
     let projectData: any = null;
-    let template: ProjectTemplate = id.includes('steering') ? 'steering' : id.includes('pavibot') ? 'pavibot' : 'custom';
-    let name = template === 'steering' ? 'Smart Steering Wheel 🚗' : template === 'pavibot' ? 'Pavibot Companion Cube 🤖' : 'ESP32 Project';
+    let template: ProjectTemplate = id.includes('steering') ? 'steering' : id.includes('pavibot') ? 'pavibot' : id.includes('radar') ? 'radar' : 'custom';
+    let name = template === 'steering' ? 'Smart Steering Wheel 🚗' : template === 'pavibot' ? 'Pavibot Companion Cube 🤖' : template === 'radar' ? 'Ultrasonic Radar 📡' : 'ESP32 Project';
     let blockXml = '';
     let code = '';
 

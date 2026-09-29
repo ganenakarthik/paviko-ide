@@ -10,6 +10,7 @@ DB_PATH = os.path.join(os.path.dirname(__file__), "paviko.db")
 
 STEERING_XML = '<xml xmlns="https://developers.google.com/blockly/xml"><block type="esp32_start" x="50" y="50"><next><block type="steering_setup"><field name="SERVO_PIN">13</field><field name="MOTOR_PIN">12</field><next><block type="controls_repeat_ext"><value name="TIMES"><shadow type="math_number"><field name="NUM">5</field></shadow></value><statement name="DO"><block type="steering_set_angle"><field name="ANGLE">90</field><next><block type="steering_drive_motor"><field name="STATE">FORWARD</field><next><block type="esp32_wait"><field name="SECONDS">2</field><next><block type="steering_set_angle"><field name="ANGLE">45</field><next><block type="esp32_wait"><field name="SECONDS">1</field><next><block type="steering_set_angle"><field name="ANGLE">135</field><next><block type="esp32_wait"><field name="SECONDS">1</field></block></next></block></next></block></next></block></next></block></next></block></statement></block></next></block></next></block></xml>'
 PAVIBOT_XML = '<xml xmlns="https://developers.google.com/blockly/xml"><block type="esp32_start" x="50" y="50"><next><block type="pavibot_setup"><field name="SDA_PIN">21</field><field name="SCL_PIN">22</field><next><block type="controls_repeat_ext"><value name="TIMES"><shadow type="math_number"><field name="NUM">10</field></shadow></value><statement name="DO"><block type="pavibot_set_expression"><field name="EXPRESSION">HAPPY</field><next><block type="esp32_wait"><field name="SECONDS">2</field><next><block type="pavibot_show_temp_hum"><next><block type="esp32_wait"><field name="SECONDS">3</field><next><block type="pavibot_set_expression"><field name="EXPRESSION">BLINK</field><next><block type="esp32_wait"><field name="SECONDS">1</field></block></next></block></next></block></next></block></next></block></statement></block></next></block></next></block></xml>'
+RADAR_XML = '<xml xmlns="https://developers.google.com/blockly/xml"><block type="esp32_start" x="50" y="50"><next><block type="radar_setup"><field name="TRIG_PIN">5</field><field name="ECHO_PIN">18</field><next><block type="controls_repeat_ext"><value name="TIMES"><shadow type="math_number"><field name="NUM">10</field></shadow></value><statement name="DO"><block type="radar_print_distance"><next><block type="radar_check_obstacle"><field name="THRESHOLD">20</field><next><block type="esp32_wait"><field name="SECONDS">1</field></block></next></block></next></block></statement></block></next></block></next></block></xml>'
 
 # ─── Database ─────────────────────────────────────────────────────────────────
 def init_db():
@@ -27,13 +28,14 @@ def init_db():
     """)
     conn.commit()
 
-    # Clear old projects and seed strictly the TWO real-time working projects
+    # Clear old projects and seed strictly the THREE real-time working projects
     conn.execute("DELETE FROM projects")
     conn.commit()
 
     sample_projects = [
         ("proj-steering", "Smart Steering Wheel 🚗", STEERING_XML, "// Steering C++ Code", "esp32"),
         ("proj-pavibot", "Pavibot Companion Cube 🤖", PAVIBOT_XML, "// Pavibot OLED C++ Code", "esp32"),
+        ("proj-radar", "Ultrasonic Radar (HC-SR04) 📡", RADAR_XML, "// HC-SR04 Radar C++ Code", "esp32"),
     ]
     cursor = conn.cursor()
     for pid, pname, pxml, pcode, ptarget in sample_projects:

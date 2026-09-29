@@ -64,6 +64,30 @@ export function getProjectToolboxXml(templateName: string): string {
 </xml>`;
   }
 
+  if (templateName === 'radar' || templateName.includes('radar') || templateName.includes('sonar') || templateName.includes('ultrasonic')) {
+    return `
+<xml id="toolbox" style="display: none">
+  <category name="📡 Radar Setup" colour="#58d68d">
+    <block type="esp32_start"></block>
+    <block type="radar_setup"></block>
+  </category>
+  <category name="📡 Pulse & Distance" colour="#88b1f2">
+    <block type="radar_print_distance"></block>
+    <block type="radar_check_obstacle"></block>
+  </category>
+  <category name="🕒 Timing & Loops" colour="#f1c40f">
+    <block type="esp32_wait"></block>
+    <block type="controls_repeat_ext">
+      <value name="TIMES">
+        <shadow type="math_number">
+          <field name="NUM">10</field>
+        </shadow>
+      </value>
+    </block>
+  </category>
+</xml>`;
+  }
+
   return `
 <xml id="toolbox" style="display: none">
   <category name="⚡ GPIO & Setup" colour="#58d68d">
@@ -93,6 +117,10 @@ export function getProjectConnectedXml(templateName: string): string {
   }
   if (templateName === 'pavibot' || templateName.includes('pavibot') || templateName.includes('groot') || templateName.includes('bot')) {
     return `<xml xmlns="https://developers.google.com/blockly/xml"><block type="esp32_start" x="50" y="50"><next><block type="pavibot_setup"><field name="SDA_PIN">21</field><field name="SCL_PIN">22</field><next><block type="controls_repeat_ext"><value name="TIMES"><shadow type="math_number"><field name="NUM">10</field></shadow></value><statement name="DO"><block type="pavibot_set_expression"><field name="EXPRESSION">HAPPY</field><next><block type="esp32_wait"><field name="SECONDS">2</field><next><block type="pavibot_show_temp_hum"><next><block type="esp32_wait"><field name="SECONDS">3</field><next><block type="pavibot_set_expression"><field name="EXPRESSION">BLINK</field><next><block type="esp32_wait"><field name="SECONDS">1</field></block></next></block></next></block></next></block></next></block></statement></block></next></block></next></block></xml>`;
+  }
+
+  if (templateName === 'radar' || templateName.includes('radar') || templateName.includes('sonar') || templateName.includes('ultrasonic')) {
+    return `<xml xmlns="https://developers.google.com/blockly/xml"><block type="esp32_start" x="50" y="50"><next><block type="radar_setup"><field name="TRIG_PIN">5</field><field name="ECHO_PIN">18</field><next><block type="controls_repeat_ext"><value name="TIMES"><shadow type="math_number"><field name="NUM">10</field></shadow></value><statement name="DO"><block type="radar_print_distance"><next><block type="radar_check_obstacle"><field name="THRESHOLD">20</field><next><block type="esp32_wait"><field name="SECONDS">1</field></block></next></block></next></block></statement></block></next></block></next></block></xml>`;
   }
   return `<xml xmlns="https://developers.google.com/blockly/xml"><block type="esp32_start" x="50" y="50"><next><block type="esp32_pin_setup"><field name="PIN">2</field><next><block type="controls_repeat_ext"><value name="TIMES"><shadow type="math_number"><field name="NUM">10</field></shadow></value><statement name="DO"><block type="esp32_led_on"><field name="PIN">2</field><next><block type="esp32_wait"><field name="SECONDS">1</field><next><block type="esp32_led_off"><field name="PIN">2</field><next><block type="esp32_wait"><field name="SECONDS">1</field></block></next></block></next></block></next></block></statement></block></next></block></next></block></xml>`;
 }
@@ -140,11 +168,12 @@ export default function BlocklyCanvas() {
     let hasSetup = false;
     let hasAction = false;
 
-    const setupTypes = ['steering_setup', 'pavibot_setup', 'esp32_pin_setup'];
+    const setupTypes = ['steering_setup', 'pavibot_setup', 'radar_setup', 'esp32_pin_setup'];
     const actionTypes = [
       'steering_set_angle', 'steering_drive_motor', 'steering_brake',
       'pavibot_set_expression', 'pavibot_show_menu', 'pavibot_show_temp_hum',
       'pavibot_run_stopwatch', 'pavibot_set_torch',
+      'radar_print_distance', 'radar_check_obstacle',
       'esp32_led_on', 'esp32_led_off', 'controls_repeat_ext'
     ];
 
@@ -157,7 +186,8 @@ export default function BlocklyCanvas() {
     if (!hasSetup) {
       const defaultSetup = 
         template === 'steering' ? 'steering_setup' :
-        template === 'pavibot' ? 'pavibot_setup' : 'esp32_pin_setup';
+        template === 'pavibot' ? 'pavibot_setup' :
+        template === 'radar' ? 'radar_setup' : 'esp32_pin_setup';
 
       applyToolboxBlockGlow(workspace, defaultSetup);
       setMissionText('✨ STEP 2: Connect your Setup block right under "when ESP32 starts"!');
@@ -168,7 +198,8 @@ export default function BlocklyCanvas() {
     if (!hasAction) {
       const defaultAction = 
         template === 'steering' ? 'steering_set_angle' :
-        template === 'pavibot' ? 'pavibot_set_expression' : 'esp32_led_on';
+        template === 'pavibot' ? 'pavibot_set_expression' :
+        template === 'radar' ? 'radar_print_distance' : 'esp32_led_on';
 
       applyToolboxBlockGlow(workspace, defaultAction);
       setMissionText('🌟 STEP 3: Awesome! Now attach your Action block to run the kit!');
@@ -216,10 +247,11 @@ export default function BlocklyCanvas() {
     const searchParams = new URLSearchParams(window.location.search);
     const templateParam = (searchParams.get('template') || '').toLowerCase();
 
-    let initialTemplate: 'steering' | 'pavibot' | 'custom' = useEditorStore.getState().activeTemplate;
+    let initialTemplate: 'steering' | 'pavibot' | 'radar' | 'custom' = useEditorStore.getState().activeTemplate;
 
     if (templateParam.includes('steering') || templateParam.includes('wheel')) initialTemplate = 'steering';
     else if (templateParam.includes('pavibot') || templateParam.includes('bot') || templateParam.includes('groot')) initialTemplate = 'pavibot';
+    else if (templateParam.includes('radar') || templateParam.includes('sonar') || templateParam.includes('ultrasonic')) initialTemplate = 'radar';
 
     useEditorStore.setState({ activeTemplate: initialTemplate });
 
@@ -401,6 +433,7 @@ export default function BlocklyCanvas() {
             >
               <option value="steering">🚗 Project: Smart Steering Wheel</option>
               <option value="pavibot">🤖 Project: Pavibot Robot Companion</option>
+              <option value="radar">📡 Project: Ultrasonic Radar (HC-SR04)</option>
               <option value="custom">⚡ Project: General ESP32 GPIO</option>
             </select>
           </div>

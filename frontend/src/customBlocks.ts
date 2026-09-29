@@ -214,6 +214,50 @@ export function defineCustomBlocks() {
       "previousStatement": null,
       "nextStatement": null,
       "style": "timing_blocks"
+    },
+
+    // --- 📡 ULTRASONIC RADAR (HC-SR04) BLOCKS ---
+    {
+      "type": "radar_setup",
+      "message0": "📡 Setup HC-SR04 Radar (TRIG Pin %1, ECHO Pin %2)",
+      "args0": [
+        {
+          "type": "field_dropdown",
+          "name": "TRIG_PIN",
+          "options": [["Pin 5", "5"], ["Pin 4", "4"], ["Pin 2", "2"]]
+        },
+        {
+          "type": "field_dropdown",
+          "name": "ECHO_PIN",
+          "options": [["Pin 18", "18"], ["Pin 19", "19"], ["Pin 12", "12"]]
+        }
+      ],
+      "previousStatement": null,
+      "nextStatement": null,
+      "style": "pin_blocks"
+    },
+    {
+      "type": "radar_print_distance",
+      "message0": "📡 Measure & Print Radar Distance (cm) to Serial",
+      "previousStatement": null,
+      "nextStatement": null,
+      "style": "timing_blocks"
+    },
+    {
+      "type": "radar_check_obstacle",
+      "message0": "🛑 Check Obstacle Alert if Distance < %1 cm",
+      "args0": [
+        {
+          "type": "field_number",
+          "name": "THRESHOLD",
+          "value": 20,
+          "min": 2,
+          "max": 400
+        }
+      ],
+      "previousStatement": null,
+      "nextStatement": null,
+      "style": "logic_blocks"
     }
   ]);
 }

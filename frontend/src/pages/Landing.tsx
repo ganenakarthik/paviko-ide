@@ -19,10 +19,9 @@ export default function Landing() {
       const res = await fetch(`${API_BASE}/projects`);
       if (res.ok) {
         const data = await res.json();
-        // Filter strictly to the 2 real-time working projects
         const filtered = data.filter((p: any) => 
-          p.id === 'proj-steering' || p.id === 'proj-pavibot' ||
-          p.name.toLowerCase().includes('steering') || p.name.toLowerCase().includes('pavibot')
+          p.id === 'proj-steering' || p.id === 'proj-pavibot' || p.id === 'proj-radar' ||
+          p.name.toLowerCase().includes('steering') || p.name.toLowerCase().includes('pavibot') || p.name.toLowerCase().includes('radar')
         );
         if (filtered.length > 0) {
           setProjects(filtered);
@@ -33,7 +32,6 @@ export default function Landing() {
       console.error("Could not fetch projects", e);
     }
 
-    // Default static projects (No duplicates created!)
     setProjects([
       {
         id: 'proj-steering',
@@ -46,12 +44,17 @@ export default function Landing() {
         name: 'Pavibot Robot Companion 🤖',
         desc: 'Program the OLED screen for GROOT companion eye expressions, menu modes, DHT11 temp/humidity, and stopwatch timer!',
         updated_at: new Date().toISOString()
+      },
+      {
+        id: 'proj-radar',
+        name: 'Ultrasonic Radar (HC-SR04) 📡',
+        desc: 'Measure distance in cm using TRIG (Pin 5) & ECHO (Pin 18) with real-time sonar wave simulation!',
+        updated_at: new Date().toISOString()
       }
     ]);
   };
 
   const handleOpenProject = (projectId: string, templateName: string) => {
-    // Navigate DIRECTLY to existing project - Never create new duplicate projects!
     navigate(`/editor/${projectId}?template=${templateName}`);
   };
 
@@ -80,11 +83,11 @@ export default function Landing() {
         </p>
       </div>
 
-      {/* FIXED 2 REAL-TIME STUDIO PROJECTS */}
+      {/* FIXED REAL-TIME STUDIO PROJECTS */}
       <div style={{ marginBottom: '36px' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
           <h3 style={{ fontSize: '1.6rem', color: '#7D0A26', fontWeight: 900, margin: 0 }}>
-            📁 Real-Time Studio Projects (2)
+            📁 Real-Time Studio Projects ({filteredProjects.length})
           </h3>
           <div style={{ width: '260px' }}>
             <input 
@@ -108,7 +111,7 @@ export default function Landing() {
           </div>
         </div>
 
-        <div className={styles.cardsGrid} style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))' }}>
+        <div className={styles.cardsGrid} style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))' }}>
           
           {/* Project 1: Smart Steering Wheel */}
           <div 
@@ -144,6 +147,25 @@ export default function Landing() {
               <div style={{marginTop: 'auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
                 <ClayButton variant="white" size="md">▶ Continue Building</ClayButton>
                 <span style={{ fontSize: '0.8rem', fontWeight: 700, color: '#888' }}>ID: proj-pavibot</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Project 3: Ultrasonic Radar */}
+          <div 
+            className={`${styles.cardOuter} ${styles.blue}`} 
+            onClick={() => handleOpenProject('proj-radar', 'radar')} 
+            style={{cursor: 'pointer'}}
+          >
+            <div className={styles.cardInner}>
+              <div className={`${styles.iconWrapper} ${styles.blue}`}>📡</div>
+              <h2 className={styles.cardTitle}>Ultrasonic Radar (HC-SR04) 📡</h2>
+              <p className={styles.cardDesc}>
+                Measure distance in cm using TRIG (Pin 5) & ECHO (Pin 18) with real-time sonar wave simulation!
+              </p>
+              <div style={{marginTop: 'auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
+                <ClayButton variant="maroon" size="md">▶ Continue Building</ClayButton>
+                <span style={{ fontSize: '0.8rem', fontWeight: 700, color: '#888' }}>ID: proj-radar</span>
               </div>
             </div>
           </div>

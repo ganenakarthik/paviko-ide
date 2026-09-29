@@ -78,6 +78,22 @@ CppGenerator.forBlock['pavibot_set_torch'] = function(block: Blockly.Block) {
   return `digitalWrite(2, ${state}); // Pavibot Torch Light\n`;
 };
 
+// --- 📡 ULTRASONIC RADAR (HC-SR04) GENERATORS ---
+CppGenerator.forBlock['radar_setup'] = function(block: Blockly.Block) {
+  const trig = block.getFieldValue('TRIG_PIN') || '5';
+  const echo = block.getFieldValue('ECHO_PIN') || '18';
+  return `pinMode(${trig}, OUTPUT); // TRIG\n  pinMode(${echo}, INPUT); // ECHO\n`;
+};
+
+CppGenerator.forBlock['radar_print_distance'] = function(block: Blockly.Block) {
+  return `digitalWrite(5, LOW);\n  delayMicroseconds(2);\n  digitalWrite(5, HIGH);\n  delayMicroseconds(10);\n  digitalWrite(5, LOW);\n  long duration = pulseIn(18, HIGH);\n  float distance = duration * 0.0343 / 2;\n  Serial.print("Distance: ");\n  Serial.print(distance);\n  Serial.println(" cm");\n`;
+};
+
+CppGenerator.forBlock['radar_check_obstacle'] = function(block: Blockly.Block) {
+  const threshold = block.getFieldValue('THRESHOLD') || '20';
+  return `digitalWrite(5, LOW);\n  delayMicroseconds(2);\n  digitalWrite(5, HIGH);\n  delayMicroseconds(10);\n  digitalWrite(5, LOW);\n  long duration = pulseIn(18, HIGH);\n  float distance = duration * 0.0343 / 2;\n  if (distance < ${threshold}) {\n    Serial.println("🛑 OBSTACLE ALERT!");\n  }\n`;
+};
+
 // --- STANDARD BLOCKLY CONTROLS ---
 CppGenerator.forBlock['controls_repeat_ext'] = function(block: Blockly.Block) {
   let repeats = '10';
@@ -112,6 +128,7 @@ export function generateCpp(workspace: Blockly.WorkspaceSvg) {
       block.type === 'esp32_pin_setup' || 
       block.type === 'steering_setup' || 
       block.type === 'pavibot_setup' ||
+      block.type === 'radar_setup' ||
       block.type === 'dht11_setup'
     ) {
       // @ts-ignore
@@ -134,7 +151,8 @@ export function generateCpp(workspace: Blockly.WorkspaceSvg) {
       if (
         curr.type !== 'esp32_pin_setup' && 
         curr.type !== 'steering_setup' && 
-        curr.type !== 'pavibot_setup'
+        curr.type !== 'pavibot_setup' &&
+        curr.type !== 'radar_setup'
       ) {
         // @ts-ignore
         const code = CppGenerator.blockToCode(curr, true);

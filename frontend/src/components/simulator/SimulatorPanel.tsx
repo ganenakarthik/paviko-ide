@@ -8,20 +8,17 @@ export default function SimulatorPanel() {
     projectName, 
     activeTemplate, 
     addTerminalLog,
-    isHardwareConnected,
-    hardwareTemp,
-    hardwareHumidity,
     hardwareServoAngle
   } = useEditorStore();
 
   const [isRunning, setIsRunning] = useState(false);
   const [voltage, setVoltage] = useState('5.0V');
-  const [gpioState, setGpioState] = useState('SAFE GPIO 13/12');
+  const [gpioState, setGpioState] = useState('SAFE GPIO 5/18');
   
   // --- Steering Sim State ---
   const [steeringAngle, setSteeringAngle] = useState(90);
   const [driveState, setDriveState] = useState<'FORWARD' | 'REVERSE' | 'BRAKE'>('FORWARD');
-  const [driveSpeed, setDriveSpeed] = useState(60);
+  const [driveSpeed] = useState(60);
 
   // --- Pavibot Sim State ---
   const [pavibotMode, setPavibotMode] = useState<'EXPRESSIONS' | 'MENU' | 'TEMP' | 'STOPWATCH' | 'TORCH'>('EXPRESSIONS');
@@ -30,9 +27,12 @@ export default function SimulatorPanel() {
   const [simTemp, setSimTemp] = useState(33.3);
   const [simHum, setSimHum] = useState(44.0);
 
+  // --- Radar Sim State ---
+  const [radarDistance, setRadarDistance] = useState(25);
+
   const displayAngle = hardwareServoAngle !== null ? hardwareServoAngle : steeringAngle;
-  const displayTemp = hardwareTemp !== null ? hardwareTemp.toFixed(2) : simTemp.toFixed(2);
-  const displayHum = hardwareHumidity !== null ? hardwareHumidity.toFixed(2) : simHum.toFixed(2);
+  const displayTemp = simTemp.toFixed(2);
+  const displayHum = simHum.toFixed(2);
 
   // Simulation Loop
   useEffect(() => {
@@ -44,21 +44,21 @@ export default function SimulatorPanel() {
         setVoltage(`${v}V`);
         
         // Blink GPIO active indicator
-        setGpioState(Math.random() > 0.5 ? 'ACTIVE GPIO 13' : 'ACTIVE GPIO 12');
+        setGpioState(Math.random() > 0.5 ? 'ACTIVE GPIO 5' : 'ACTIVE GPIO 18');
 
         if (activeTemplate === 'steering' || projectName.toLowerCase().includes('steering')) {
-          // Swing steering angle if auto running
           setSteeringAngle(prev => (prev >= 135 ? 45 : prev + 15));
         } else if (activeTemplate === 'pavibot' || projectName.toLowerCase().includes('pavibot') || projectName.toLowerCase().includes('bot')) {
-          // Increment stopwatch ms
           setStopwatchMs(prev => (prev + 45) % 1000);
-          
-          // Output live sensor log
           if (pavibotMode === 'TEMP') {
             const tFluc = (simTemp + (Math.random() * 0.2 - 0.1)).toFixed(2);
             const hFluc = (simHum + (Math.random() * 0.4 - 0.2)).toFixed(2);
             addTerminalLog(`[Pavibot DHT11] 🌡️ Tem: ${tFluc}°C | 💧 Hum: ${hFluc}%`, 'info');
           }
+        } else if (activeTemplate === 'radar' || projectName.toLowerCase().includes('radar') || projectName.toLowerCase().includes('sonar')) {
+          // Send distance log to terminal
+          const distFluc = (radarDistance + (Math.random() * 0.6 - 0.3)).toFixed(1);
+          addTerminalLog(`[HC-SR04 Radar] Distance: ${distFluc} cm ${Number(distFluc) < 20 ? '🛑 OBSTACLE ALERT!' : '🟢 CLEAR'}`, 'info');
         }
       }, 500);
     } else {
@@ -66,7 +66,7 @@ export default function SimulatorPanel() {
       setGpioState('SAFE GPIO');
     }
     return () => clearInterval(interval);
-  }, [isRunning, activeTemplate, projectName, pavibotMode, simTemp, simHum, addTerminalLog]);
+  }, [isRunning, activeTemplate, projectName, pavibotMode, simTemp, simHum, radarDistance, addTerminalLog]);
 
   const handleRunSim = () => {
     let { generatedCode, triggerPaviReaction } = useEditorStore.getState();
@@ -96,7 +96,8 @@ export default function SimulatorPanel() {
   };
 
   const currentType = activeTemplate || (
-    projectName.toLowerCase().includes('steering') || projectName.toLowerCase().includes('wheel') ? 'steering' : 'pavibot'
+    projectName.toLowerCase().includes('steering') ? 'steering' :
+    projectName.toLowerCase().includes('radar') || projectName.toLowerCase().includes('sonar') ? 'radar' : 'pavibot'
   );
 
   return (
@@ -104,7 +105,8 @@ export default function SimulatorPanel() {
       <div className={styles.simHeader}>
         <div>
           <div className={styles.title}>
-            {currentType === 'steering' ? '🚗 SMART STEERING WHEEL SIM' : '🤖 PAVIBOT COMPANION CUBE (GROOT 3D OLED)'}
+            {currentType === 'steering' ? '🚗 SMART STEERING WHEEL SIM' :
+             currentType === 'radar' ? '📡 ULTRASONIC RADAR SIM (HC-SR04)' : '🤖 PAVIBOT COMPANION CUBE (GROOT 3D OLED)'}
           </div>
           <div className={styles.readyPill} style={{ background: isRunning ? '#e8a2a2' : '#a2e8c2', color: isRunning ? '#5e1a1a' : '#1a5e30' }}>
             {isRunning ? 'SIMULATION ACTIVE' : 'READY'}
@@ -127,7 +129,7 @@ export default function SimulatorPanel() {
         alignItems: 'center', 
         justifyContent: 'center', 
         minHeight: '160px',
-        background: currentType === 'pavibot' ? '#1e2430' : '#fdfaf6',
+        background: currentType === 'pavibot' ? '#1e2430' : currentType === 'radar' ? '#0d1b2a' : '#fdfaf6',
         borderRadius: '20px',
         padding: '12px',
         position: 'relative',
@@ -140,7 +142,6 @@ export default function SimulatorPanel() {
         {currentType === 'steering' && (
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', width: '100%' }}>
             
-            {/* Rotating 3D Wheel graphic */}
             <div style={{
               position: 'relative',
               width: '100px',
@@ -155,11 +156,8 @@ export default function SimulatorPanel() {
               alignItems: 'center',
               justifyContent: 'center'
             }}>
-              {/* Wheel Spokes */}
               <div style={{ position: 'absolute', width: '100%', height: '8px', background: '#7f8c8d' }} />
               <div style={{ position: 'absolute', width: '8px', height: '100%', background: '#7f8c8d' }} />
-              
-              {/* Center Horn Badge */}
               <div style={{
                 width: '36px',
                 height: '36px',
@@ -178,7 +176,6 @@ export default function SimulatorPanel() {
               </div>
             </div>
 
-            {/* Steering telemetry readouts */}
             <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
               <span style={{ fontSize: '0.85rem', fontWeight: 900, color: '#7D0A26' }}>
                 Angle: {displayAngle}° ({displayAngle < 75 ? '◀ Turn Left' : displayAngle > 105 ? 'Turn Right ▶' : 'Straight ⬆'})
@@ -197,11 +194,85 @@ export default function SimulatorPanel() {
           </div>
         )}
 
-        {/* 2. PAVIBOT COMPANION CUBE (GROOT OLED VISUAL MATCHING HARDWARE PHOTOS) */}
+        {/* 2. ULTRASONIC RADAR VIEW (HC-SR04) */}
+        {currentType === 'radar' && (
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '10px', width: '100%', color: '#4cc9f0' }}>
+            
+            {/* Visual HC-SR04 Blue Module with Scanning Sonar Beam */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '30px', position: 'relative' }}>
+              
+              {/* HC-SR04 Blue PCB Board */}
+              <div style={{
+                width: '110px',
+                height: '60px',
+                background: '#1d3557',
+                borderRadius: '8px',
+                border: '2px solid #457b9d',
+                boxShadow: '0 6px 15px rgba(0,0,0,0.4)',
+                display: 'flex',
+                justify: 'space-around',
+                alignItems: 'center',
+                padding: '4px',
+                position: 'relative'
+              }}>
+                {/* Transducer Cylinders (T and R) */}
+                <div style={{ width: '32px', height: '32px', borderRadius: '50%', background: 'radial-gradient(circle, #d8e2dc 40%, #708090 90%)', border: '2px solid #222', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.6rem', fontWeight: 900, color: '#222' }}>T</div>
+                <div style={{ width: '32px', height: '32px', borderRadius: '50%', background: 'radial-gradient(circle, #d8e2dc 40%, #708090 90%)', border: '2px solid #222', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.6rem', fontWeight: 900, color: '#222' }}>R</div>
+              </div>
+
+              {/* Sonar Pulse Wave Arcs */}
+              <div style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
+                <div style={{ width: '8px', height: '24px', borderRight: '3px solid #4cc9f0', borderRadius: '50%', opacity: isRunning ? 0.9 : 0.4 }} />
+                <div style={{ width: '12px', height: '36px', borderRight: '3px solid #4cc9f0', borderRadius: '50%', opacity: isRunning ? 0.7 : 0.3 }} />
+                <div style={{ width: '16px', height: '48px', borderRight: '3px solid #4cc9f0', borderRadius: '50%', opacity: isRunning ? 0.5 : 0.2 }} />
+              </div>
+
+              {/* Obstacle Object Target Box */}
+              <div style={{
+                width: '40px',
+                height: '50px',
+                background: radarDistance < 20 ? '#e63946' : '#2a9d8f',
+                borderRadius: '8px',
+                border: '2px solid #FFF',
+                boxShadow: radarDistance < 20 ? '0 0 15px #e63946' : '0 0 10px #2a9d8f',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontWeight: 900,
+                color: '#FFF',
+                fontSize: '1.2rem',
+                transform: `translateX(${Math.min(radarDistance, 60)}px)`,
+                transition: 'all 0.3s ease'
+              }}>
+                📦
+              </div>
+
+            </div>
+
+            {/* Readout Pill */}
+            <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+              <span style={{ fontSize: '0.9rem', fontWeight: 900, color: '#FFF' }}>
+                Distance: <span style={{ color: '#4cc9f0' }}>{radarDistance} cm</span>
+              </span>
+              <span style={{
+                background: radarDistance < 20 ? '#e63946' : '#2a9d8f',
+                color: '#FFF',
+                padding: '3px 12px',
+                borderRadius: '100px',
+                fontWeight: 900,
+                fontSize: '0.78rem'
+              }}>
+                {radarDistance < 20 ? '🛑 OBSTACLE ALERT! (< 20cm)' : '🟢 PATH CLEAR (> 20cm)'}
+              </span>
+            </div>
+
+          </div>
+        )}
+
+        {/* 3. PAVIBOT COMPANION CUBE */}
         {currentType === 'pavibot' && (
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%' }}>
             
-            {/* 3D Printed Grey Cube Enclosure */}
             <div style={{
               width: '180px',
               height: '140px',
@@ -216,7 +287,6 @@ export default function SimulatorPanel() {
               position: 'relative'
             }}>
               
-              {/* Bevel arch header matching hardware photo */}
               <div style={{
                 width: '100%',
                 height: '6px',
@@ -225,7 +295,6 @@ export default function SimulatorPanel() {
                 marginBottom: '6px'
               }} />
 
-              {/* OLED Blue Display Screen Window */}
               <div style={{
                 width: '140px',
                 height: '75px',
@@ -244,7 +313,6 @@ export default function SimulatorPanel() {
                 overflow: 'hidden'
               }}>
                 
-                {/* Mode 1: EXPRESSIONS (Glowing Pixel Eyes matching photos 1 & 2) */}
                 {pavibotMode === 'EXPRESSIONS' && (
                   <div style={{ display: 'flex', gap: '14px', alignItems: 'center' }}>
                     {pavibotExpression === 'HAPPY' && (
@@ -274,7 +342,6 @@ export default function SimulatorPanel() {
                   </div>
                 )}
 
-                {/* Mode 2: MENU (Matching photo 3) */}
                 {pavibotMode === 'MENU' && (
                   <div style={{ width: '100%', fontSize: '0.65rem', lineHeight: '1.2' }}>
                     <div style={{ textAlign: 'center', borderBottom: '1px solid #00d2ff', paddingBottom: '2px', fontWeight: 'bold' }}>MENU</div>
@@ -285,7 +352,6 @@ export default function SimulatorPanel() {
                   </div>
                 )}
 
-                {/* Mode 3: TEMP (Matching photo 4) */}
                 {pavibotMode === 'TEMP' && (
                   <div style={{ width: '100%', fontSize: '0.8rem', lineHeight: '1.5', fontWeight: 'bold' }}>
                     <div>Tem: {displayTemp}C</div>
@@ -293,7 +359,6 @@ export default function SimulatorPanel() {
                   </div>
                 )}
 
-                {/* Mode 4: STOPWATCH (Matching photo 5) */}
                 {pavibotMode === 'STOPWATCH' && (
                   <div style={{ width: '100%', textAlign: 'center', fontSize: '0.8rem', lineHeight: '1.6', fontWeight: 'bold' }}>
                     <div style={{ letterSpacing: '1px' }}>STOPWATCH</div>
@@ -301,14 +366,12 @@ export default function SimulatorPanel() {
                   </div>
                 )}
 
-                {/* Mode 5: TORCH */}
                 {pavibotMode === 'TORCH' && (
                   <div style={{ width: '100%', height: '100%', background: '#00d2ff', boxShadow: '0 0 25px #00d2ff' }} />
                 )}
 
               </div>
 
-              {/* 3D Engraved "GROOT" Text on casing matching photo */}
               <div style={{
                 color: '#34383c',
                 fontWeight: 900,
@@ -357,6 +420,19 @@ export default function SimulatorPanel() {
             >
               {driveState === 'FORWARD' ? '🏎️ Drive' : '🛑 Brake'}
             </button>
+          </>
+        ) : currentType === 'radar' ? (
+          <>
+            <span style={{ fontSize: '0.75rem', fontWeight: 800, color: '#7D0A26' }}>Obstacle Distance:</span>
+            <input 
+              type="range" 
+              min="5" 
+              max="100" 
+              value={radarDistance} 
+              onChange={(e) => setRadarDistance(Number(e.target.value))}
+              style={{ flex: 1, accentColor: '#7D0A26' }}
+            />
+            <span style={{ fontSize: '0.75rem', fontWeight: 900 }}>{radarDistance} cm</span>
           </>
         ) : (
           <>

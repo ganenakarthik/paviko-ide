@@ -14,6 +14,7 @@ export default function WiringModal({ isOpen, onClose }: WiringModalProps) {
 
   const currentType = activeTemplate || (
     projectName.toLowerCase().includes('steering') || projectName.toLowerCase().includes('wheel') ? 'steering' :
+    projectName.toLowerCase().includes('radar') || projectName.toLowerCase().includes('sonar') ? 'radar' :
     projectName.toLowerCase().includes('pavibot') || projectName.toLowerCase().includes('bot') || projectName.toLowerCase().includes('groot') ? 'pavibot' : 'custom'
   );
 
@@ -41,6 +42,18 @@ export default function WiringModal({ isOpen, onClose }: WiringModalProps) {
             </div>
           )}
 
+          {currentType === 'radar' && (
+            <div className={styles.circuitCard}>
+              <div style={{ fontSize: '3rem' }}>📡</div>
+              <div>
+                <h3 style={{ margin: 0, color: '#7D0A26', fontWeight: 900 }}>HC-SR04 Ultrasonic Radar Wiring</h3>
+                <p style={{ margin: '4px 0 0', color: '#555', fontSize: '0.9rem' }}>
+                  TRIG ➔ <strong>GPIO 5</strong> | ECHO ➔ <strong>GPIO 18</strong> ⚠️ (Use voltage divider: ECHO ➔ 1kΩ ➔ GPIO18 ➔ 2kΩ ➔ GND) | VCC ➔ <strong>5V/VIN & GND</strong>.
+                </p>
+              </div>
+            </div>
+          )}
+
           {currentType === 'pavibot' && (
             <div className={styles.circuitCard}>
               <div style={{ fontSize: '3rem' }}>🤖</div>
@@ -60,6 +73,14 @@ export default function WiringModal({ isOpen, onClose }: WiringModalProps) {
 
           <div className={styles.pinGrid}>
             <div className={styles.pinPill}>
+              <span>Pin 5 (HC-SR04 TRIG)</span>
+              <span className={styles.pinTag}>GPIO 5</span>
+            </div>
+            <div className={styles.pinPill}>
+              <span>Pin 18 (HC-SR04 ECHO)</span>
+              <span className={styles.pinTag}>GPIO 18</span>
+            </div>
+            <div className={styles.pinPill}>
               <span>Pin 21 (I2C OLED SDA)</span>
               <span className={styles.pinTag}>GPIO 21</span>
             </div>
@@ -74,10 +95,6 @@ export default function WiringModal({ isOpen, onClose }: WiringModalProps) {
             <div className={styles.pinPill}>
               <span>Pin 12 (Motor Drive PWM)</span>
               <span className={styles.pinTag}>GPIO 12</span>
-            </div>
-            <div className={styles.pinPill}>
-              <span>Pin 4 (DHT11 Data)</span>
-              <span className={styles.pinTag}>GPIO 4</span>
             </div>
             <div className={styles.pinPill}>
               <span>Power / Ground</span>
