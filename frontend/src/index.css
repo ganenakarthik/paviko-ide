@@ -1,0 +1,86 @@
+/* index.css */
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900;1000&family=Quicksand:wght@600;700;800&display=swap');
+
+:root {
+  /* Brand Colors */
+  --maroon: #7D0A26;
+  --maroon-hover: #991033;
+  --bg-clay: #f3efe9;
+  
+  /* Tactile Clay Shadow Tokens */
+  --clay-shadow-lg: 
+    inset 0 8px 12px rgba(255,255,255,0.9),
+    inset 0 -8px 16px rgba(200,185,170,0.5),
+    0 16px 32px rgba(120,90,80,0.18),
+    0 6px 12px rgba(0,0,0,0.08);
+
+  --clay-shadow-sm: 
+    inset 0 4px 6px rgba(255,255,255,0.9),
+    inset 0 -4px 6px rgba(200,185,170,0.4),
+    0 8px 16px rgba(0,0,0,0.1);
+
+  --clay-button-maroon: 
+    inset 0 4px 6px rgba(255,255,255,0.35),
+    inset 0 -4px 8px rgba(0,0,0,0.35),
+    0 8px 16px rgba(125,10,38,0.25);
+
+  --clay-button-white: 
+    inset 0 4px 6px rgba(255,255,255,1),
+    inset 0 -4px 6px rgba(210,200,190,0.4),
+    0 8px 16px rgba(0,0,0,0.12);
+
+  /* Fonts */
+  --font-display: 'Nunito', sans-serif;
+  --font-body: 'Quicksand', sans-serif;
+}
+
+body, html {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  min-height: 100%;
+  font-family: var(--font-body);
+  background-color: var(--bg-clay);
+  background-image: 
+    radial-gradient(circle at 50% 0%, #fdfcf9 0%, transparent 60%),
+    url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.08'/%3E%3C/svg%3E");
+  color: #333;
+  overflow-x: hidden;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--font-display);
+  margin: 0;
+}
+
+a {
+  text-decoration: none;
+}
+
+/* Micro spring animation classes */
+.clayHover {
+  transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.clayHover:hover {
+  transform: translateY(-3px) scale(1.02);
+}
+
+.clayHover:active {
+  transform: translateY(1px) scale(0.98);
+}
+
+/* NEXT BLOCK GLOW ANIMATION FOR KIDS TUTORIAL */
+.blocklyNextBlockGlow {
+  animation: nextBlockPulse 1.2s infinite alternate !important;
+  filter: drop-shadow(0 0 14px #FFD700) brightness(1.25) !important;
+}
+
+@keyframes nextBlockPulse {
+  0% { transform: scale(1); filter: drop-shadow(0 0 6px #F1C40F) brightness(1.15); }
+  100% { transform: scale(1.06); filter: drop-shadow(0 0 20px #FFD700) brightness(1.35); }
+}

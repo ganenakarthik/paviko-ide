@@ -1,0 +1,109 @@
+.panel {
+  background: #FFFEFB;
+  border-radius: 24px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  box-shadow: 
+    inset 0 4px 6px rgba(255,255,255,1),
+    inset 0 -4px 8px rgba(210,200,190,0.5),
+    0 12px 20px rgba(120,100,90,0.15);
+  border: 3px solid rgba(125,10,38,0.05);
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.simHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.title {
+  font-family: var(--font-display);
+  font-weight: 1000;
+  font-size: 1.1rem;
+  color: #333;
+}
+
+.readyPill {
+  background: #a2e8c2;
+  color: #1a5e30;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 0.7rem;
+  padding: 2px 8px;
+  border-radius: 10px;
+  display: inline-block;
+  margin-top: 4px;
+  box-shadow: inset 0 2px 2px rgba(255,255,255,0.8);
+}
+
+.simSub {
+  font-size: 0.8rem;
+  font-weight: 800;
+  line-height: 1.2;
+  color: #555;
+}
+
+.runBtn {
+  background: #7D0A26;
+  color: white;
+  font-family: var(--font-display);
+  font-weight: 900;
+  padding: 8px 16px;
+  border-radius: 100px;
+  border: none;
+  box-shadow: 
+    inset 0 2px 4px rgba(255,255,255,0.3),
+    inset 0 -3px 4px rgba(0,0,0,0.3),
+    0 6px 12px rgba(125,10,38,0.3);
+  cursor: pointer;
+}
+
+.hwControls {
+  background: #fdfaf6;
+  border-radius: 16px;
+  padding: 12px;
+  box-shadow: inset 0 4px 6px rgba(0,0,0,0.05), inset 0 -4px 6px rgba(255,255,255,1);
+}
+
+.hwTitle {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: 0.85rem;
+  color: #7D0A26;
+  margin-bottom: 8px;
+}
+
+.pillRow {
+  display: flex;
+  gap: 12px;
+}
+
+.hwPill {
+  background: #FFFEFB;
+  flex: 1;
+  padding: 12px;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 
+    inset 0 2px 4px rgba(255,255,255,1),
+    inset 0 -2px 4px rgba(210,200,190,0.4),
+    0 4px 8px rgba(0,0,0,0.05);
+  font-family: var(--font-display);
+  font-weight: 1000;
+  font-size: 1.1rem;
+  color: #7D0A26;
+  text-align: center;
+}
+
+.lbl {
+  font-size: 0.75rem;
+  color: #888;
+}

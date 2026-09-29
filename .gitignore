@@ -1,0 +1,22 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Builds
+dist/
+build/
+.output/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+venv/
+.venv/
+paviko.db
+
+# System & IDE
+.DS_Store
+*.log
+.env
+.env.local
