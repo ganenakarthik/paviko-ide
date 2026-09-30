@@ -8,7 +8,7 @@ import styles from './Navbar.module.css';
 
 export default function Navbar() {
   const navigate = useNavigate();
-  const { isHardwareConnected, projectName, addTerminalLog } = useEditorStore();
+  const { isHardwareConnected, setIsHardwareConnected, projectName, activeTemplate, addTerminalLog } = useEditorStore();
   
   const [isWiringOpen, setIsWiringOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
@@ -19,30 +19,57 @@ export default function Navbar() {
     navigate('/');
   };
 
+  const handleToggleHardware = () => {
+    const nextState = !isHardwareConnected;
+    setIsHardwareConnected(nextState);
+    if (nextState) {
+      addTerminalLog('[Hardware] 🔌 WebSerial connected to ESP32 DevKit V1 on COM3 (115200 baud).', 'success');
+    } else {
+      addTerminalLog('[Hardware] 🔌 USB Hardware disconnected. Switching to 3D Simulator mode.', 'info');
+    }
+  };
+
   return (
     <>
-      <header className={styles.header}>
-        <div className={styles.logoArea}>
-          <img src="/logo.jpg" alt="Paviko Logo" className={styles.logoImage} onClick={handleHome} style={{cursor: 'pointer'}} />
-          <span style={{ fontFamily: 'var(--font-display)', fontWeight: 900, fontSize: '1.1rem', color: '#7D0A26', marginLeft: '12px' }}>
-            {projectName}
-          </span>
-        </div>
-
-        <div className={styles.menuArea}>
-          <button className={styles.menuBtn} onClick={() => setIsSettingsOpen(true)}>⚙️ Project Settings & Export</button>
-          <button className={styles.menuBtn} onClick={() => setIsWiringOpen(true)}>🔌 Hardware Wiring Guide</button>
-          <button className={styles.menuBtn} onClick={() => setIsAiOpen(true)}>🤖 AI Supercharger</button>
-        </div>
-
-        <div className={styles.rightArea}>
-          <div className={styles.statusPill} style={{ background: isHardwareConnected ? '#a2e8c2' : '#eab8b1', color: isHardwareConnected ? '#1a5e30' : '#7D0A26' }}>
-            <span className={styles.statusDot} style={{ background: isHardwareConnected ? '#2ecc71' : '#d9534f' }}></span> 
-            {isHardwareConnected ? 'Kit Connected' : 'No Kit Connected'}
+      <header className={styles.topBar}>
+        {/* LEFT AREA: LOGO & TITLE */}
+        <div className={styles.leftArea}>
+          <div className={styles.logoBadge} onClick={handleHome} title="Go to Dashboard">
+            <img src="/logo.jpg" alt="Paviko Logo" className={styles.logoImg} />
+            <span className={styles.logoTitle}>PAVIKO STUDIO</span>
           </div>
 
+          <div className={styles.projectPill}>
+            <span className={styles.projectDot} />
+            <span className={styles.projectName}>{projectName}</span>
+          </div>
+        </div>
+
+        {/* RIGHT AREA: CLAY PILL BUTTONS */}
+        <div className={styles.rightArea}>
+          {/* HARDWARE MAP PILL BUTTON */}
+          <button className={`${styles.pillBtn} ${styles.whitePill}`} onClick={() => setIsWiringOpen(true)}>
+            🔌 Hardware Map
+          </button>
+
+          {/* AI SUPERCHARGER PILL BUTTON */}
+          <button className={`${styles.pillBtn} ${styles.whitePill}`} onClick={() => setIsAiOpen(true)}>
+            🤖 AI Supercharger
+          </button>
+
+          {/* KIT CONNECTED / DISCONNECTED GREEN PILL */}
           <button 
-            className={styles.iconBtn} 
+            className={`${styles.pillBtn} ${isHardwareConnected ? styles.greenConnectedPill : styles.redDisconnectedPill}`}
+            onClick={handleToggleHardware}
+            title="Click to toggle simulated USB Serial ESP32 connection"
+          >
+            <span className={styles.statusDot} style={{ background: isHardwareConnected ? '#FFF' : '#FFD700' }} />
+            {isHardwareConnected ? 'Kit Connected' : 'Connect Hardware'}
+          </button>
+
+          {/* SOUND TOGGLE */}
+          <button 
+            className={styles.iconCircleBtn}
             onClick={() => {
               setSoundEnabled(!soundEnabled);
               addTerminalLog(`[System] Sound effects ${!soundEnabled ? 'ENABLED' : 'MUTED'}.`, 'info');
@@ -52,12 +79,14 @@ export default function Navbar() {
             {soundEnabled ? '🔊' : '🔇'}
           </button>
           
-          <button className={styles.iconBtn} onClick={() => setIsAiOpen(true)} title="Pavi AI Assistant">
-            🤖
+          {/* SETTINGS */}
+          <button className={styles.iconCircleBtn} onClick={() => setIsSettingsOpen(true)} title="Project Settings & Export">
+            ⚙️
           </button>
-          
-          <button className={styles.iconBtn} onClick={handleHome} title="Home Dashboard">
-            📁
+
+          {/* DASHBOARD HOME */}
+          <button className={styles.iconCircleBtn} onClick={handleHome} title="Return to Dashboard">
+            🏠
           </button>
         </div>
       </header>

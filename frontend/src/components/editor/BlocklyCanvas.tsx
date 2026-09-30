@@ -394,6 +394,24 @@ export default function BlocklyCanvas() {
   return (
     <div className={styles.wrapper}>
       <div className={styles.workspace}>
+        {/* PAVIBOT MASCOT AVATAR & SPEECH BUBBLE STEP HINTS */}
+        <div className={styles.mascotBanner}>
+          <div className={styles.mascotAvatarBox}>
+            <span className={styles.mascotIcon}>🤖</span>
+          </div>
+          <div className={styles.speechBubble}>
+            <div className={styles.bubbleText}>{missionText}</div>
+          </div>
+
+          <button
+            onClick={handleAutoBuildWorkingBlocks}
+            className={`clayBtn ${styles.autoAttachBtn}`}
+            title="Auto-Attach 100% Correct & Working Blocks for this project"
+          >
+            ⚡ Auto-Attach Blocks
+          </button>
+        </div>
+
         <div className={styles.workspaceHeader}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
             <span className={styles.workspaceTitle}>✨ Blockly Editor</span>
@@ -417,19 +435,7 @@ export default function BlocklyCanvas() {
                   setMissionText(`⚡ Switched to ${selected.toUpperCase()} Project! 100% Working Blocks Loaded!`);
                 }
               }}
-              style={{
-                padding: '6px 14px',
-                borderRadius: '100px',
-                border: '2px solid #7D0A26',
-                background: '#FFF0F3',
-                color: '#7D0A26',
-                fontFamily: 'var(--font-display)',
-                fontWeight: 900,
-                fontSize: '0.85rem',
-                cursor: 'pointer',
-                outline: 'none',
-                boxShadow: '0 2px 8px rgba(125,10,38,0.15)'
-              }}
+              className={styles.templateSelect}
             >
               <option value="steering">🚗 Project: Smart Steering Wheel</option>
               <option value="pavibot">🤖 Project: Pavibot Robot Companion</option>
@@ -437,52 +443,10 @@ export default function BlocklyCanvas() {
               <option value="custom">⚡ Project: General ESP32 GPIO</option>
             </select>
           </div>
-          
-          {/* GAME TUTORIAL MISSION BANNER */}
-          <div style={{
-            background: currentHint === 'toolbox' ? '#FFF0F0' : currentHint === 'flash' ? '#E8F8F0' : '#FDF0FF',
-            color: currentHint === 'toolbox' ? '#C0392B' : currentHint === 'flash' ? '#27AE60' : '#8E44AD',
-            padding: '6px 16px',
-            borderRadius: '100px',
-            border: `2px solid ${currentHint === 'toolbox' ? '#E74C3C' : currentHint === 'flash' ? '#2ECC71' : '#9B59B6'}`,
-            fontFamily: 'var(--font-display)',
-            fontWeight: 800,
-            fontSize: '0.9rem',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '8px',
-            boxShadow: '0 4px 10px rgba(0,0,0,0.05)'
-          }}>
-            {missionText}
-          </div>
 
-          <button
-            onClick={handleAutoBuildWorkingBlocks}
-            title="Auto-Attach 100% Correct & Working Blocks for this project"
-            style={{
-              background: 'linear-gradient(135deg, #FF9F43 0%, #FF5252 100%)',
-              color: '#FFF',
-              border: 'none',
-              padding: '7px 16px',
-              borderRadius: '100px',
-              fontFamily: 'var(--font-display)',
-              fontWeight: 900,
-              fontSize: '0.88rem',
-              cursor: 'pointer',
-              boxShadow: '0 4px 12px rgba(255,82,82,0.3)',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '6px',
-              transition: 'all 0.15s ease'
-            }}
-            onMouseDown={(e) => (e.currentTarget.style.transform = 'scale(0.94)')}
-            onMouseUp={(e) => (e.currentTarget.style.transform = 'scale(1)')}
-          >
-            ⚡ Auto-Attach Working Blocks
-          </button>
-
-          <span className={styles.workspaceHint}>Drag & Drop components</span>
+          <span className={styles.workspaceHint}>Drag & Drop blocks onto canvas</span>
         </div>
+
         <div className={styles.dottedCanvas}>
           <div ref={blocklyDiv} style={{ width: '100%', height: '100%' }} />
         </div>

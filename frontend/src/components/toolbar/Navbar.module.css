@@ -1,116 +1,169 @@
-.header {
+.topBar {
   width: 100%;
-  background: #7D0A26;
-  border-radius: 40px;
-  padding: 8px 16px;
+  height: 56px;
+  background: var(--maroon);
+  border-radius: 100px;
+  padding: 0 16px;
   display: flex;
   align-items: center;
-  border: 3px solid rgba(125,10,38,0.1);
+  justify-content: space-between;
   box-shadow: 
-    inset 0 4px 6px rgba(255,255,255,0.2),
-    inset 0 -8px 12px rgba(0,0,0,0.35),
-    0 16px 24px rgba(125,10,38,0.25);
+    inset 2px 2px 4px rgba(255, 255, 255, 0.3),
+    inset -2px -2px 6px rgba(0, 0, 0, 0.4),
+    0 8px 20px rgba(90, 11, 26, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  flex-shrink: 0;
+  z-index: 10;
 }
 
-.logoArea {
+.leftArea {
   display: flex;
   align-items: center;
-  position: relative;
-  width: 160px;
+  gap: 14px;
 }
 
-.logoImage {
-  position: absolute;
-  left: 0;
-  width: 48px;
-  height: 48px;
-  border-radius: 12px;
-  box-shadow: 
-    0 4px 8px rgba(0,0,0,0.2),
-    0 8px 16px rgba(125,10,38,0.2);
-  object-fit: contain;
-  background: white;
-}
-
-.menuArea {
+.logoBadge {
   display: flex;
-  gap: 12px;
-  margin-left: 20px;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  background: rgba(255, 255, 255, 0.12);
+  padding: 4px 12px 4px 4px;
+  border-radius: 100px;
+  transition: all 0.15s ease;
 }
 
-.menuBtn {
-  background: rgba(255,255,255,0.15);
-  color: white;
+.logoBadge:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.logoImg {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1.5px solid #FFF;
+}
+
+.logoTitle {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: 0.95rem;
+  color: #FFFFFF;
+  letter-spacing: 0.5px;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+}
+
+.projectPill {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(0, 0, 0, 0.25);
+  padding: 5px 14px;
+  border-radius: 100px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.projectDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #FFD700;
+  box-shadow: 0 0 6px #FFD700;
+}
+
+.projectName {
   font-family: var(--font-display);
   font-weight: 800;
-  font-size: 1.1rem;
-  padding: 8px 20px;
-  border-radius: 100px;
-  border: none;
-  cursor: pointer;
-  box-shadow: 
-    inset 0 2px 4px rgba(255,255,255,0.2),
-    inset 0 -3px 5px rgba(0,0,0,0.2);
-  transition: all 0.2s;
-  text-shadow: 0 2px 2px rgba(0,0,0,0.3);
-}
-
-.menuBtn:hover {
-  background: rgba(255,255,255,0.25);
+  font-size: 0.88rem;
+  color: #FFF;
 }
 
 .rightArea {
-  margin-left: auto;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.statusPill {
-  background: #eab8b1;
-  color: #7D0A26;
-  font-family: var(--font-display);
-  font-weight: 900;
-  font-size: 1rem;
-  padding: 8px 20px;
-  border-radius: 100px;
   display: flex;
   align-items: center;
   gap: 10px;
+}
+
+.pillBtn {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 0.82rem;
+  padding: 6px 16px;
+  border-radius: 100px;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.15s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  user-select: none;
+}
+
+.whitePill {
+  background: #FFFFFF;
+  color: var(--maroon);
   box-shadow: 
-    inset 0 4px 6px rgba(255,255,255,0.8),
-    inset 0 -4px 6px rgba(0,0,0,0.2),
-    0 6px 12px rgba(0,0,0,0.2);
+    inset 2px 2px 4px rgba(255,255,255,1),
+    inset -2px -2px 4px rgba(200,190,180,0.4),
+    0 4px 10px rgba(0,0,0,0.15);
+}
+
+.whitePill:hover {
+  background: #FFFDF9;
+  transform: translateY(-1px) scale(1.02);
+}
+
+.whitePill:active {
+  transform: scale(0.95);
+  box-shadow: inset -2px -2px 4px rgba(255,255,255,0.7), inset 2px 2px 4px rgba(0,0,0,0.2);
+}
+
+.greenConnectedPill {
+  background: #2ECC71;
+  color: #FFFFFF;
+  box-shadow: 
+    inset 2px 2px 4px rgba(255,255,255,0.4),
+    inset -2px -2px 4px rgba(0,0,0,0.2),
+    0 4px 12px rgba(46, 204, 113, 0.4);
+}
+
+.redDisconnectedPill {
+  background: #E74C3C;
+  color: #FFFFFF;
+  box-shadow: 
+    inset 2px 2px 4px rgba(255,255,255,0.4),
+    inset -2px -2px 4px rgba(0,0,0,0.2),
+    0 4px 12px rgba(231, 76, 60, 0.4);
 }
 
 .statusDot {
-  width: 10px;
-  height: 10px;
-  background: #d9534f;
+  width: 8px;
+  height: 8px;
   border-radius: 50%;
-  box-shadow: inset 0 2px 2px rgba(255,255,255,0.5);
+  box-shadow: 0 0 6px rgba(255,255,255,0.8);
 }
 
-.iconBtn, .profileBtn {
-  background: #eab8b1;
-  border: none;
-  width: 44px;
-  height: 44px;
+.iconCircleBtn {
+  width: 34px;
+  height: 34px;
   border-radius: 50%;
+  background: rgba(255, 255, 255, 0.15);
+  color: #FFF;
+  border: 1px solid rgba(255,255,255,0.2);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.2rem;
   cursor: pointer;
-  box-shadow: 
-    inset 0 4px 6px rgba(255,255,255,0.8),
-    inset 0 -4px 6px rgba(0,0,0,0.2),
-    0 6px 12px rgba(0,0,0,0.2);
-  color: #7D0A26;
-  font-weight: 800;
-  font-family: var(--font-display);
+  font-size: 0.95rem;
+  transition: all 0.15s ease;
 }
 
-.profileBtn {
-  background: #FFFEFB;
+.iconCircleBtn:hover {
+  background: rgba(255, 255, 255, 0.25);
+  transform: scale(1.06);
+}
+
+.iconCircleBtn:active {
+  transform: scale(0.92);
 }

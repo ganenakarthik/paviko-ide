@@ -1,33 +1,39 @@
-/* index.css */
+/* index.css — Claymorphic Design System */
 @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900;1000&family=Quicksand:wght@600;700;800&display=swap');
 
 :root {
   /* Brand Colors */
-  --maroon: #7D0A26;
-  --maroon-hover: #991033;
-  --bg-clay: #f3efe9;
+  --maroon: #5A0B1A;
+  --maroon-hover: #7D0A26;
+  --bg-clay: #FAF6F0;
+  --card-clay: #FFFFFF;
+  --dark-stage: #1A1F26;
   
   /* Tactile Clay Shadow Tokens */
   --clay-shadow-lg: 
-    inset 0 8px 12px rgba(255,255,255,0.9),
-    inset 0 -8px 16px rgba(200,185,170,0.5),
-    0 16px 32px rgba(120,90,80,0.18),
-    0 6px 12px rgba(0,0,0,0.08);
+    inset 4px 4px 8px rgba(255, 255, 255, 0.9),
+    inset -4px -4px 8px rgba(0, 0, 0, 0.08),
+    0 12px 28px rgba(90, 11, 26, 0.08);
 
-  --clay-shadow-sm: 
-    inset 0 4px 6px rgba(255,255,255,0.9),
-    inset 0 -4px 6px rgba(200,185,170,0.4),
-    0 8px 16px rgba(0,0,0,0.1);
+  --clay-shadow-card: 
+    inset 3px 3px 6px rgba(255, 255, 255, 0.95),
+    inset -4px -4px 8px rgba(200, 185, 170, 0.35),
+    0 10px 24px rgba(0, 0, 0, 0.06);
 
   --clay-button-maroon: 
-    inset 0 4px 6px rgba(255,255,255,0.35),
-    inset 0 -4px 8px rgba(0,0,0,0.35),
-    0 8px 16px rgba(125,10,38,0.25);
+    inset 3px 3px 6px rgba(255, 255, 255, 0.35),
+    inset -3px -3px 6px rgba(0, 0, 0, 0.35),
+    0 8px 18px rgba(90, 11, 26, 0.3);
 
   --clay-button-white: 
-    inset 0 4px 6px rgba(255,255,255,1),
-    inset 0 -4px 6px rgba(210,200,190,0.4),
-    0 8px 16px rgba(0,0,0,0.12);
+    inset 3px 3px 6px rgba(255, 255, 255, 1),
+    inset -3px -3px 6px rgba(210, 200, 190, 0.4),
+    0 6px 14px rgba(0, 0, 0, 0.08);
+
+  --clay-button-green: 
+    inset 3px 3px 6px rgba(255, 255, 255, 0.45),
+    inset -3px -3px 6px rgba(0, 0, 0, 0.25),
+    0 8px 16px rgba(46, 204, 113, 0.3);
 
   /* Fonts */
   --font-display: 'Nunito', sans-serif;
@@ -38,14 +44,14 @@ body, html {
   margin: 0;
   padding: 0;
   width: 100%;
-  min-height: 100%;
+  height: 100%;
   font-family: var(--font-body);
   background-color: var(--bg-clay);
   background-image: 
-    radial-gradient(circle at 50% 0%, #fdfcf9 0%, transparent 60%),
-    url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.08'/%3E%3C/svg%3E");
-  color: #333;
-  overflow-x: hidden;
+    radial-gradient(circle at 50% 0%, #FFFFFF 0%, transparent 60%),
+    radial-gradient(circle at 0% 100%, #F4ECE1 0%, transparent 50%);
+  color: #2D2727;
+  overflow: hidden;
 }
 
 * {
@@ -61,17 +67,77 @@ a {
   text-decoration: none;
 }
 
-/* Micro spring animation classes */
-.clayHover {
+/* Claymorphic Pillowy Card Utility Class */
+.clayCard {
+  background: var(--card-clay);
+  border-radius: 28px;
+  box-shadow: var(--clay-shadow-card);
+  border: 2px solid rgba(255, 255, 255, 0.8);
   transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
-.clayHover:hover {
-  transform: translateY(-3px) scale(1.02);
+/* Claymorphic Squishy Button Utility Class */
+.clayBtn {
+  font-family: var(--font-display);
+  font-weight: 800;
+  border-radius: 100px;
+  border: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.15s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  user-select: none;
 }
 
-.clayHover:active {
-  transform: translateY(1px) scale(0.98);
+.clayBtnMaroon {
+  background: var(--maroon);
+  color: #FFFFFF;
+  box-shadow: var(--clay-button-maroon);
+}
+
+.clayBtnMaroon:hover {
+  background: var(--maroon-hover);
+  transform: translateY(-2px) scale(1.02);
+}
+
+.clayBtnMaroon:active {
+  transform: translateY(1px) scale(0.96);
+  box-shadow: inset -3px -3px 6px rgba(255, 255, 255, 0.3), inset 3px 3px 6px rgba(0, 0, 0, 0.4);
+}
+
+.clayBtnGreen {
+  background: #2ECC71;
+  color: #FFFFFF;
+  box-shadow: var(--clay-button-green);
+}
+
+.clayBtnGreen:hover {
+  background: #27AE60;
+  transform: translateY(-2px) scale(1.02);
+}
+
+.clayBtnGreen:active {
+  transform: translateY(1px) scale(0.96);
+  box-shadow: inset -3px -3px 6px rgba(255, 255, 255, 0.4), inset 3px 3px 6px rgba(0, 0, 0, 0.3);
+}
+
+.clayBtnWhite {
+  background: #FFFFFF;
+  color: var(--maroon);
+  box-shadow: var(--clay-button-white);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.clayBtnWhite:hover {
+  background: #FFFBF7;
+  transform: translateY(-2px) scale(1.02);
+}
+
+.clayBtnWhite:active {
+  transform: translateY(1px) scale(0.96);
+  box-shadow: inset -3px -3px 6px rgba(255, 255, 255, 0.8), inset 3px 3px 6px rgba(0, 0, 0, 0.15);
 }
 
 /* NEXT BLOCK GLOW ANIMATION FOR KIDS TUTORIAL */
