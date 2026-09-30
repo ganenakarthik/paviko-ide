@@ -353,9 +353,9 @@ export default function BlocklyCanvas() {
 
   return (
     <div className={styles.wrapper}>
-      <div className={styles.workspaceCard}>
+      <div className={styles.workspace}>
         
-        {/* 1. PAVIBOT MASCOT TUTORIAL SPEECH BUBBLE BANNER (CLEAN & FULL WIDTH, NO BUTTON COLLISION!) */}
+        {/* 1. TOP ROW: TUTORIAL PILL BANNER ("STEP 1: Drag...") WITH AVATAR ON LEFT */}
         <div className={styles.mascotBanner}>
           <div className={styles.mascotAvatarBox}>
             <span className={styles.mascotIcon}>🤖</span>
@@ -365,21 +365,17 @@ export default function BlocklyCanvas() {
           </div>
         </div>
 
-        {/* 2. WORKSPACE HEADER (CLEAN TITLE, AUTO-ATTACH BUTTON, & HINT TEXT — NO DUPLICATE DROPDOWNS!) */}
+        {/* 2. SECOND ROW: FLEXBOX WITH JUSTIFY-BETWEEN (LEFT: TITLE, RIGHT: ORANGE AUTO-ATTACH BUTTON) */}
         <div className={styles.workspaceHeader}>
-          <div className={styles.headerLeftGroup}>
-            <span className={styles.workspaceTitle}>✨ Blockly Editor</span>
+          <span className={styles.workspaceTitle}>✨ Blockly Editor</span>
 
-            <button
-              onClick={handleAutoBuildWorkingBlocks}
-              className={`clayBtn ${styles.autoAttachBtn}`}
-              title="Auto-Attach 100% Correct & Working Blocks for this project"
-            >
-              ⚡ Auto-Attach Blocks
-            </button>
-          </div>
-
-          <span className={styles.workspaceHint}>Drag & drop blocks onto canvas</span>
+          <button
+            onClick={handleAutoBuildWorkingBlocks}
+            className={`clayBtn ${styles.autoAttachBtn}`}
+            title="Auto-Attach 100% Correct & Working Blocks for this project"
+          >
+            ⚡ Auto-Attach Blocks
+          </button>
         </div>
 
         {/* 3. DOTTED CANVAS WORK SURFACE */}
@@ -391,3 +387,4 @@ export default function BlocklyCanvas() {
     </div>
   );
 }
+

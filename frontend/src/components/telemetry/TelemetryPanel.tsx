@@ -45,18 +45,20 @@ export default function TelemetryPanel() {
         </div>
       </div>
 
-      {/* PUFFY CLAY METRIC CARD 2: DISTANCE */}
-      <div className={styles.metricCard}>
-        <div className={styles.cardIcon}>📡</div>
-        <div className={styles.cardInfo}>
-          <span className={styles.cardLabel}>DISTANCE (CM)</span>
-          <span className={styles.cardValue} style={{ color: distance < 20 ? '#E74C3C' : '#27AE60' }}>
-            {distance} cm {distance < 20 ? '🛑' : '🟢'}
-          </span>
+      {/* PUFFY CLAY METRIC CARD 2: DISTANCE (ONLY SHOWN FOR RADAR / NON-STEERING PROJECTS) */}
+      {!isSteering && (
+        <div className={styles.metricCard}>
+          <div className={styles.cardIcon}>📡</div>
+          <div className={styles.cardInfo}>
+            <span className={styles.cardLabel}>DISTANCE (CM)</span>
+            <span className={styles.cardValue} style={{ color: distance < 20 ? '#E74C3C' : '#27AE60' }}>
+              {distance} cm {distance < 20 ? '🛑' : '🟢'}
+            </span>
+          </div>
         </div>
-      </div>
+      )}
 
-      {/* PUFFY CLAY METRIC CARD 3: SPEED */}
+      {/* PUFFY CLAY METRIC CARD 3: MOTOR SPEED */}
       <div className={styles.metricCard}>
         <div className={styles.cardIcon}>🏎️</div>
         <div className={styles.cardInfo}>
@@ -67,9 +69,23 @@ export default function TelemetryPanel() {
         </div>
       </div>
 
-      {/* PUFFY CLAY METRIC CARD 4: STATUS */}
+      {/* PUFFY CLAY METRIC CARD 4: HARDWARE MONITOR */}
       <div className={styles.metricCard}>
-        <div className={styles.cardIcon}>⚡</div>
+        <div className={styles.cardIcon}>🔌</div>
+        <div className={styles.cardInfo}>
+          <span className={styles.cardLabel}>HARDWARE MONITOR</span>
+          <span className={styles.cardValue} style={{ color: '#27AE60', fontSize: '0.88rem' }}>
+            Voltage: 5.0 V
+          </span>
+          <span style={{ color: '#5A0B1A', fontSize: '0.8rem', fontWeight: 800, marginTop: '2px' }}>
+            Pin Status: Safe (GPIO)
+          </span>
+        </div>
+      </div>
+
+      {/* PUFFY CLAY METRIC CARD 5: SYSTEM STATUS */}
+      <div className={styles.metricCard}>
+        <div className={styles.cardIcon}>🛡️</div>
         <div className={styles.cardInfo}>
           <span className={styles.cardLabel}>SYSTEM STATUS</span>
           <span className={styles.cardStatusBadge} style={{ background: isHardwareConnected ? '#2ECC71' : '#5A0B1A' }}>

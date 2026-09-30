@@ -92,8 +92,11 @@ export default function SimulatorPanel() {
           {currentType === 'steering' ? '🏎️ CAR STEERING STAGE' :
            currentType === 'radar' ? '📡 SONAR RADAR STAGE' : '🤖 PAVIBOT OLED CUBE STAGE'}
         </div>
-        <div className={styles.statusPill} style={{ background: isRunning || isTestDriving ? '#E8F8F0' : '#FFF0F3', color: isRunning || isTestDriving ? '#27AE60' : '#5A0B1A' }}>
-          {isRunning || isTestDriving ? 'ACTIVE' : 'READY'}
+        
+        {/* SINGLE CLEAN PILL IN CENTER HEADER: Status: Ready WITH GREEN CIRCLE INDICATOR */}
+        <div className={styles.statusBadge}>
+          <span className={styles.greenCircleIndicator} />
+          <span>Status: {isRunning || isTestDriving ? 'Active' : 'Ready'}</span>
         </div>
       </div>
 
