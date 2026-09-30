@@ -3,49 +3,50 @@
   height: 56px;
   background: var(--maroon);
   border-radius: 100px;
-  padding: 0 16px;
+  padding: 0 20px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   box-shadow: 
-    inset 2px 2px 4px rgba(255, 255, 255, 0.3),
+    inset 2px 2px 4px rgba(255, 255, 255, 0.25),
     inset -2px -2px 6px rgba(0, 0, 0, 0.4),
-    0 8px 20px rgba(90, 11, 26, 0.25);
-  border: 1px solid rgba(255, 255, 255, 0.15);
+    0 8px 20px rgba(90, 11, 26, 0.2);
+  border: 1.5px solid rgba(255, 255, 255, 0.15);
   flex-shrink: 0;
   z-index: 10;
+  overflow: hidden;
 }
 
-.leftArea {
+.leftGroup {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 16px;
 }
 
-.logoBadge {
+.brandBox {
   display: flex;
   align-items: center;
   gap: 8px;
   cursor: pointer;
   background: rgba(255, 255, 255, 0.12);
-  padding: 4px 12px 4px 4px;
+  padding: 4px 14px 4px 5px;
   border-radius: 100px;
   transition: all 0.15s ease;
 }
 
-.logoBadge:hover {
+.brandBox:hover {
   background: rgba(255, 255, 255, 0.2);
 }
 
-.logoImg {
-  width: 32px;
-  height: 32px;
+.brandLogo {
+  width: 30px;
+  height: 30px;
   border-radius: 50%;
   object-fit: cover;
   border: 1.5px solid #FFF;
 }
 
-.logoTitle {
+.brandName {
   font-family: var(--font-display);
   font-weight: 900;
   font-size: 0.95rem;
@@ -61,7 +62,7 @@
   background: rgba(0, 0, 0, 0.25);
   padding: 5px 14px;
   border-radius: 100px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.12);
 }
 
 .projectDot {
@@ -72,17 +73,17 @@
   box-shadow: 0 0 6px #FFD700;
 }
 
-.projectName {
+.projectText {
   font-family: var(--font-display);
   font-weight: 800;
   font-size: 0.88rem;
   color: #FFF;
 }
 
-.rightArea {
+.rightGroup {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
 }
 
 .pillBtn {
@@ -90,6 +91,7 @@
   font-weight: 800;
   font-size: 0.82rem;
   padding: 6px 16px;
+  height: 36px;
   border-radius: 100px;
   border: none;
   cursor: pointer;
@@ -98,6 +100,7 @@
   gap: 6px;
   transition: all 0.15s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   user-select: none;
+  white-space: nowrap;
 }
 
 .whitePill {
@@ -119,7 +122,7 @@
   box-shadow: inset -2px -2px 4px rgba(255,255,255,0.7), inset 2px 2px 4px rgba(0,0,0,0.2);
 }
 
-.greenConnectedPill {
+.greenPill {
   background: #2ECC71;
   color: #FFFFFF;
   box-shadow: 
@@ -128,42 +131,53 @@
     0 4px 12px rgba(46, 204, 113, 0.4);
 }
 
-.redDisconnectedPill {
-  background: #E74C3C;
-  color: #FFFFFF;
-  box-shadow: 
-    inset 2px 2px 4px rgba(255,255,255,0.4),
-    inset -2px -2px 4px rgba(0,0,0,0.2),
-    0 4px 12px rgba(231, 76, 60, 0.4);
+.greenPill:hover {
+  background: #27AE60;
+  transform: translateY(-1px) scale(1.02);
+}
+
+.greenPill:active {
+  transform: scale(0.95);
 }
 
 .statusDot {
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  box-shadow: 0 0 6px rgba(255,255,255,0.8);
+  box-shadow: 0 0 4px rgba(0,0,0,0.2);
 }
 
-.iconCircleBtn {
-  width: 34px;
-  height: 34px;
+.iconBadgeGroup {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(0, 0, 0, 0.15);
+  padding: 3px;
+  border-radius: 100px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.circleIconBtn {
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.18);
   color: #FFF;
-  border: 1px solid rgba(255,255,255,0.2);
+  border: none;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   transition: all 0.15s ease;
+  flex-shrink: 0;
 }
 
-.iconCircleBtn:hover {
-  background: rgba(255, 255, 255, 0.25);
-  transform: scale(1.06);
+.circleIconBtn:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: scale(1.08);
 }
 
-.iconCircleBtn:active {
+.circleIconBtn:active {
   transform: scale(0.92);
 }

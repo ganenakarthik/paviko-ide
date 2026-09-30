@@ -8,7 +8,7 @@ import styles from './Navbar.module.css';
 
 export default function Navbar() {
   const navigate = useNavigate();
-  const { isHardwareConnected, setIsHardwareConnected, projectName, activeTemplate, addTerminalLog } = useEditorStore();
+  const { isHardwareConnected, setIsHardwareConnected, projectName, addTerminalLog } = useEditorStore();
   
   const [isWiringOpen, setIsWiringOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
@@ -32,62 +32,62 @@ export default function Navbar() {
   return (
     <>
       <header className={styles.topBar}>
-        {/* LEFT AREA: LOGO & TITLE */}
-        <div className={styles.leftArea}>
-          <div className={styles.logoBadge} onClick={handleHome} title="Go to Dashboard">
-            <img src="/logo.jpg" alt="Paviko Logo" className={styles.logoImg} />
-            <span className={styles.logoTitle}>PAVIKO STUDIO</span>
+        {/* LEFT AREA: BRAND LOGO & PROJECT TITLE PILL */}
+        <div className={styles.leftGroup}>
+          <div className={styles.brandBox} onClick={handleHome} title="Go to Dashboard">
+            <img src="/logo.jpg" alt="Paviko Logo" className={styles.brandLogo} />
+            <span className={styles.brandName}>PAVIKO STUDIO</span>
           </div>
 
           <div className={styles.projectPill}>
             <span className={styles.projectDot} />
-            <span className={styles.projectName}>{projectName}</span>
+            <span className={styles.projectText}>{projectName}</span>
           </div>
         </div>
 
-        {/* RIGHT AREA: CLAY PILL BUTTONS */}
-        <div className={styles.rightArea}>
-          {/* HARDWARE MAP PILL BUTTON */}
+        {/* RIGHT AREA: UNIFORM CLAY PILL ACTIONS & CIRCULAR BADGES */}
+        <div className={styles.rightGroup}>
+          {/* HARDWARE MAP */}
           <button className={`${styles.pillBtn} ${styles.whitePill}`} onClick={() => setIsWiringOpen(true)}>
             🔌 Hardware Map
           </button>
 
-          {/* AI SUPERCHARGER PILL BUTTON */}
+          {/* AI SUPERCHARGER */}
           <button className={`${styles.pillBtn} ${styles.whitePill}`} onClick={() => setIsAiOpen(true)}>
             🤖 AI Supercharger
           </button>
 
-          {/* KIT CONNECTED / DISCONNECTED GREEN PILL */}
+          {/* CONNECT HARDWARE (High-Contrast White or Green Pill - No Bright Orange Alert!) */}
           <button 
-            className={`${styles.pillBtn} ${isHardwareConnected ? styles.greenConnectedPill : styles.redDisconnectedPill}`}
+            className={`${styles.pillBtn} ${isHardwareConnected ? styles.greenPill : styles.whitePill}`}
             onClick={handleToggleHardware}
-            title="Click to toggle simulated USB Serial ESP32 connection"
+            title="Click to toggle USB Hardware connection"
           >
-            <span className={styles.statusDot} style={{ background: isHardwareConnected ? '#FFF' : '#FFD700' }} />
+            <span className={styles.statusDot} style={{ background: isHardwareConnected ? '#FFF' : '#2ECC71' }} />
             {isHardwareConnected ? 'Kit Connected' : 'Connect Hardware'}
           </button>
 
-          {/* SOUND TOGGLE */}
-          <button 
-            className={styles.iconCircleBtn}
-            onClick={() => {
-              setSoundEnabled(!soundEnabled);
-              addTerminalLog(`[System] Sound effects ${!soundEnabled ? 'ENABLED' : 'MUTED'}.`, 'info');
-            }} 
-            title="Toggle Sound Effects"
-          >
-            {soundEnabled ? '🔊' : '🔇'}
-          </button>
-          
-          {/* SETTINGS */}
-          <button className={styles.iconCircleBtn} onClick={() => setIsSettingsOpen(true)} title="Project Settings & Export">
-            ⚙️
-          </button>
+          {/* CIRCULAR BADGE ICONS (Clean 36px, No Clipping!) */}
+          <div className={styles.iconBadgeGroup}>
+            <button 
+              className={styles.circleIconBtn}
+              onClick={() => {
+                setSoundEnabled(!soundEnabled);
+                addTerminalLog(`[System] Sound effects ${!soundEnabled ? 'ENABLED' : 'MUTED'}.`, 'info');
+              }} 
+              title="Toggle Sound"
+            >
+              {soundEnabled ? '🔊' : '🔇'}
+            </button>
 
-          {/* DASHBOARD HOME */}
-          <button className={styles.iconCircleBtn} onClick={handleHome} title="Return to Dashboard">
-            🏠
-          </button>
+            <button className={styles.circleIconBtn} onClick={() => setIsSettingsOpen(true)} title="Settings">
+              ⚙️
+            </button>
+
+            <button className={styles.circleIconBtn} onClick={handleHome} title="Home Dashboard">
+              🏠
+            </button>
+          </div>
         </div>
       </header>
 

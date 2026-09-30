@@ -118,7 +118,6 @@ export function getProjectConnectedXml(templateName: string): string {
   if (templateName === 'pavibot' || templateName.includes('pavibot') || templateName.includes('groot') || templateName.includes('bot')) {
     return `<xml xmlns="https://developers.google.com/blockly/xml"><block type="esp32_start" x="50" y="50"><next><block type="pavibot_setup"><field name="SDA_PIN">21</field><field name="SCL_PIN">22</field><next><block type="controls_repeat_ext"><value name="TIMES"><shadow type="math_number"><field name="NUM">10</field></shadow></value><statement name="DO"><block type="pavibot_set_expression"><field name="EXPRESSION">HAPPY</field><next><block type="esp32_wait"><field name="SECONDS">2</field><next><block type="pavibot_show_temp_hum"><next><block type="esp32_wait"><field name="SECONDS">3</field><next><block type="pavibot_set_expression"><field name="EXPRESSION">BLINK</field><next><block type="esp32_wait"><field name="SECONDS">1</field></block></next></block></next></block></next></block></next></block></statement></block></next></block></next></block></xml>`;
   }
-
   if (templateName === 'radar' || templateName.includes('radar') || templateName.includes('sonar') || templateName.includes('ultrasonic')) {
     return `<xml xmlns="https://developers.google.com/blockly/xml"><block type="esp32_start" x="50" y="50"><next><block type="radar_setup"><field name="TRIG_PIN">5</field><field name="ECHO_PIN">18</field><next><block type="controls_repeat_ext"><value name="TIMES"><shadow type="math_number"><field name="NUM">10</field></shadow></value><statement name="DO"><block type="radar_print_distance"><next><block type="radar_check_obstacle"><field name="THRESHOLD">20</field><next><block type="esp32_wait"><field name="SECONDS">1</field></block></next></block></next></block></statement></block></next></block></next></block></xml>`;
   }
@@ -132,7 +131,7 @@ export default function BlocklyCanvas() {
   const { activeTemplate, loadProject, saveProject, triggerPaviReaction } = useEditorStore();
   const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  const [missionText, setMissionText] = useState<string>('👈 STEP 1: Drag "⚡ when ESP32 starts" from the glowing Candy Tray!');
+  const [missionText, setMissionText] = useState<string>('👈 STEP 1: Drag "⚡ when ESP32 starts" onto the canvas!');
 
   const handleAutoBuildWorkingBlocks = () => {
     if (!workspaceRef.current) return;
@@ -149,7 +148,7 @@ export default function BlocklyCanvas() {
 
     soundManager.playPop();
     triggerPaviReaction('yes');
-    setMissionText(`⚡ 100% Working Block Stack Auto-Attached for ${template.toUpperCase()}!`);
+    setMissionText(`⚡ 100% Working Block Stack Auto-Attached!`);
   };
 
   // Helper to determine next target block & update toolbox glow
@@ -159,7 +158,7 @@ export default function BlocklyCanvas() {
 
     if (!startBlock) {
       applyToolboxBlockGlow(workspace, 'esp32_start');
-      setMissionText('👈 STEP 1: Drag "⚡ when ESP32 starts" from the glowing Candy Tray!');
+      setMissionText('👈 STEP 1: Drag "⚡ when ESP32 starts" onto the canvas!');
       useEditorStore.getState().setCurrentHint('toolbox');
       return;
     }
@@ -243,7 +242,6 @@ export default function BlocklyCanvas() {
   useEffect(() => {
     if (!blocklyDiv.current) return;
 
-    // Read template URL query parameter if present
     const searchParams = new URLSearchParams(window.location.search);
     const templateParam = (searchParams.get('template') || '').toLowerCase();
 
@@ -257,7 +255,6 @@ export default function BlocklyCanvas() {
 
     const initialXml = getProjectToolboxXml(initialTemplate);
 
-    // Inject Blockly with initial template XML
     workspaceRef.current = Blockly.inject(blocklyDiv.current, {
       toolbox: initialXml,
       theme: PavikoTheme,
@@ -284,10 +281,8 @@ export default function BlocklyCanvas() {
       }
     });
 
-    // Store workspace reference globally for simulator access
     (window as any).BlocklyWorkspace = workspaceRef.current;
 
-    // Load Project if ID exists
     if (id) {
       loadProject(id, workspaceRef.current).then(() => {
         if (workspaceRef.current) {
@@ -306,7 +301,6 @@ export default function BlocklyCanvas() {
       }
     }
 
-    // Handle code generation and auto-save on change
     workspaceRef.current.addChangeListener((e) => {
       if (e.type === Blockly.Events.BLOCK_MOVE || e.type === Blockly.Events.BLOCK_CREATE) {
         // @ts-ignore
@@ -326,11 +320,9 @@ export default function BlocklyCanvas() {
         e.type === Blockly.Events.BLOCK_CREATE
       ) {
         if (workspaceRef.current) {
-          // Generate Code
           const code = generateCpp(workspaceRef.current);
           useEditorStore.setState({ generatedCode: code });
 
-          // Debounce auto-save
           if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current);
           saveTimeoutRef.current = setTimeout(() => {
             if (workspaceRef.current) {
@@ -338,30 +330,13 @@ export default function BlocklyCanvas() {
             }
           }, 1000);
 
-          // Evaluate next block guidance & glowing target
           const currentTmpl = useEditorStore.getState().activeTemplate;
           evaluateNextBlockGuidance(workspaceRef.current, currentTmpl);
         }
       }
     });
 
-    const handleMouseOver = (e: MouseEvent) => {
-      if ((e.target as HTMLElement).closest('.blocklyToolboxDiv')) {
-        useEditorStore.getState().triggerPaviReaction('look_left');
-      }
-    };
-    const handleMouseOut = (e: MouseEvent) => {
-      if ((e.target as HTMLElement).closest('.blocklyToolboxDiv') && !(e.relatedTarget as HTMLElement)?.closest('.blocklyToolboxDiv')) {
-        useEditorStore.getState().triggerPaviReaction(null);
-      }
-    };
-    
-    document.addEventListener('mouseover', handleMouseOver);
-    document.addEventListener('mouseout', handleMouseOut);
-
     return () => {
-      document.removeEventListener('mouseover', handleMouseOver);
-      document.removeEventListener('mouseout', handleMouseOut);
       if (workspaceRef.current) {
         workspaceRef.current.dispose();
       }
@@ -369,7 +344,6 @@ export default function BlocklyCanvas() {
     };
   }, [id, loadProject, saveProject]);
 
-  // Dynamically update toolbox XML when activeTemplate changes
   useEffect(() => {
     if (workspaceRef.current) {
       workspaceRef.current.updateToolbox(getProjectToolboxXml(activeTemplate));
@@ -377,79 +351,42 @@ export default function BlocklyCanvas() {
     }
   }, [activeTemplate]);
 
-  // Handle Toolbox Hint Glow
-  useEffect(() => {
-    const toolboxElement = document.querySelector('.blocklyToolboxDiv');
-    if (toolboxElement) {
-      if (useEditorStore.getState().currentHint === 'toolbox') {
-        toolboxElement.classList.add('hintGlow');
-      } else {
-        toolboxElement.classList.remove('hintGlow');
-      }
-    }
-  });
-
-  const { currentHint } = useEditorStore();
-
   return (
     <div className={styles.wrapper}>
-      <div className={styles.workspace}>
-        {/* PAVIBOT MASCOT AVATAR & SPEECH BUBBLE STEP HINTS */}
+      <div className={styles.workspaceCard}>
+        
+        {/* 1. PAVIBOT MASCOT TUTORIAL SPEECH BUBBLE BANNER (CLEAN & FULL WIDTH, NO BUTTON COLLISION!) */}
         <div className={styles.mascotBanner}>
           <div className={styles.mascotAvatarBox}>
             <span className={styles.mascotIcon}>🤖</span>
           </div>
           <div className={styles.speechBubble}>
-            <div className={styles.bubbleText}>{missionText}</div>
+            <span className={styles.bubbleText}>{missionText}</span>
           </div>
-
-          <button
-            onClick={handleAutoBuildWorkingBlocks}
-            className={`clayBtn ${styles.autoAttachBtn}`}
-            title="Auto-Attach 100% Correct & Working Blocks for this project"
-          >
-            ⚡ Auto-Attach Blocks
-          </button>
         </div>
 
+        {/* 2. WORKSPACE HEADER (CLEAN TITLE, AUTO-ATTACH BUTTON, & HINT TEXT — NO DUPLICATE DROPDOWNS!) */}
         <div className={styles.workspaceHeader}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <div className={styles.headerLeftGroup}>
             <span className={styles.workspaceTitle}>✨ Blockly Editor</span>
-            
-            <select
-              value={activeTemplate}
-              onChange={(e) => {
-                const selected = e.target.value as any;
-                useEditorStore.setState({ activeTemplate: selected });
-                if (workspaceRef.current) {
-                  workspaceRef.current.updateToolbox(getProjectToolboxXml(selected));
-                  const connectedXml = getProjectConnectedXml(selected);
-                  workspaceRef.current.clear();
-                  const dom = Blockly.utils.xml.textToDom(connectedXml);
-                  Blockly.Xml.domToWorkspace(dom, workspaceRef.current);
-                  const code = generateCpp(workspaceRef.current);
-                  useEditorStore.setState({ generatedCode: code });
-                  saveProject(workspaceRef.current);
-                  soundManager.playPop();
-                  triggerPaviReaction('yes');
-                  setMissionText(`⚡ Switched to ${selected.toUpperCase()} Project! 100% Working Blocks Loaded!`);
-                }
-              }}
-              className={styles.templateSelect}
+
+            <button
+              onClick={handleAutoBuildWorkingBlocks}
+              className={`clayBtn ${styles.autoAttachBtn}`}
+              title="Auto-Attach 100% Correct & Working Blocks for this project"
             >
-              <option value="steering">🚗 Project: Smart Steering Wheel</option>
-              <option value="pavibot">🤖 Project: Pavibot Robot Companion</option>
-              <option value="radar">📡 Project: Ultrasonic Radar (HC-SR04)</option>
-              <option value="custom">⚡ Project: General ESP32 GPIO</option>
-            </select>
+              ⚡ Auto-Attach Blocks
+            </button>
           </div>
 
-          <span className={styles.workspaceHint}>Drag & Drop blocks onto canvas</span>
+          <span className={styles.workspaceHint}>Drag & drop blocks onto canvas</span>
         </div>
 
+        {/* 3. DOTTED CANVAS WORK SURFACE */}
         <div className={styles.dottedCanvas}>
           <div ref={blocklyDiv} style={{ width: '100%', height: '100%' }} />
         </div>
+
       </div>
     </div>
   );
